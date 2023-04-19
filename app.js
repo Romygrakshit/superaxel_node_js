@@ -33,6 +33,7 @@ const categories_routes = require("./routes/categoriesRoutes");
 const sub_categories_routes = require("./routes/subCategoriesRoutes");
 const users_routes = require("./routes/usersRoutes");
 const clubs_routes = require("./routes/clubsRoutes");
+const vendors_routes = require("./routes/vendorsRoutes");
 const events_routes = require("./routes/eventsRoutes");
 const tickets_routes = require("./routes/ticketsRoutes");
 
@@ -41,6 +42,7 @@ app.use("/categories", categories_routes);
 app.use("/sub/categories", sub_categories_routes);
 app.use("/users", users_routes);
 app.use("/clubs", clubs_routes);
+app.use("/vendors", vendors_routes);
 app.use("/events", events_routes);
 app.use("/tickets", tickets_routes);
 

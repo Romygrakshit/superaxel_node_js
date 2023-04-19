@@ -8,10 +8,12 @@ const {
   deleteUsers,
   listUsers,
   editUserPage,
+  validateInputs,
   // upload,
 } = require("../controllers/userAPI");
 
-router.route("/register").post(registerUsers);
+router.route("/register").post(validateInputs, registerUsers);
+
 router.route("/add").get(addUsersPage);
 router.route("/edit").put(editUsers);
 router.route("/edit/page/:id").get(editUserPage);

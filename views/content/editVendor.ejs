@@ -1,0 +1,619 @@
+<div class="main-content-inner">
+  <div class="row">
+    <div class="col-lg-6 col-ml-12">
+      <div class="row">
+        <!-- Textual inputs start -->
+        <div class="col-6 mt-5">
+          <div class="card">
+            <div class="card-body">
+              <form action="/vendors/edit?_method=PUT" method="post">
+                <div class="form-group">
+                  <h4 class="header-title">Edit Vendor: <%= vendor.name %></h4>
+
+                  <label class="col-form-label">Name</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="Vendor Name"
+                    id="example-text-input"
+                    name="name"
+                    value="<%= vendor.name %>"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <!-- <label for="inputPassword" class="">ID</label> -->
+                  <input
+                    type="hidden"
+                    class="form-control"
+                    name="id"
+                    value="<%= vendor.id %>"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >Address</label
+                  >
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="address"
+                    name="address"
+                    value="<%= vendor.address %>"
+                    id="example-text-input"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >Capacity</label
+                  >
+                  <input
+                    class="form-control"
+                    type="number"
+                    placeholder="capacity"
+                    name="capacity"
+                    value="<%= vendor.capacity %>"
+                    id="example-text-input"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >House</label
+                  >
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="house rules"
+                    name="house_rules"
+                    value="<%= vendor.house_rules %>"
+                    id="example-text-input"
+                  />
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="terms and condition"
+                    name="tnc"
+                    value="<%= vendor.tnc %>"
+                    id="example-text-input"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >Charges</label
+                  >
+                  <input
+                    class="form-control"
+                    type="number"
+                    placeholder="charges"
+                    name="charges"
+                    value="<%= vendor.charges %>"
+                    id="example-text-input"
+                  />
+
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="Charges Type"
+                    name="charges_type"
+                    <%="vendor.charges_type"
+                    %
+                  />
+                  id="example-text-input" />
+                </div>
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >Check In/out Timings</label
+                  >
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="check in"
+                    name="check_in"
+                    <%="vendor.check_in"
+                    %
+                  />
+                  id="example-text-input" />
+
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="check out"
+                    name="check_out"
+                    value="<%= vendor.check_out %>"
+                    id="example-text-input"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >Cordinates</label
+                  >
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="latitude"
+                    name="lat"
+                    value="<%= vendor.lat %>"
+                    id="example-text-input"
+                  />
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="longitude"
+                    name="lng"
+                    value="<%= vendor.lng %>"
+                    id="example-text-input"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="col-form-label">Host and Image</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="host name"
+                    name="host_name"
+                    <%="vendor.host_name"
+                    %
+                  />
+                  id="example-text-input" />
+                  <input
+                    class="form-control"
+                    placeholder="host image"
+                    type="file"
+                    name="hostImage"
+                  />
+                </div>
+
+                <button class="btn btn-primary mb-3">Save</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- Textual inputs end -->
+        <!-- Update Password -->
+        <div class="col-6 mt-5">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="header-title">
+                Update Password for: <%= vendor.name %>
+              </h4>
+              <form action="/vendors/edit/password?_method=PUT" method="post">
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Write New Password:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="password"
+                    placeholder="password"
+                    value=""
+                    required
+                  />
+                  <input
+                    class="form-control"
+                    type="hidden"
+                    name="id"
+                    value="<%= vendor.id %>"
+                    required
+                  />
+                </div>
+
+                <button type="submit" class="btn btn-primary mb-3">
+                  Update Password
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- basic form end -->
+        <div class="col-12 mt-5">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="header-title">Images for: <%= vendor.name %></h4>
+              <div class="form-group">
+                <label for="example-tel-input" class="col-form-label"
+                  >Banner Image:</label
+                >
+                <div class="card col-md-5">
+                  <% if ( vendor.url == 0) { %> No Banner Image <% } else { %>
+                  <img
+                    style="height: 150px; width: 200px"
+                    src="<%= vendor.url %>"
+                    width="100px"
+                  />
+
+                  <div class="row">
+                    <div class="col-md-5">
+                      <button
+                        type="button"
+                        class="badge btn-danger mt-4"
+                        data-toggle="modal"
+                        data-target="#exampleModalLong-deleteBanner "
+                      >
+                        Delete Banner
+                      </button>
+
+                      <div
+                        class="modal fade"
+                        id="exampleModalLong-deleteBanner"
+                      >
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">Delete Banner</h5>
+                              <button
+                                type="button"
+                                class="close"
+                                data-dismiss="modal"
+                              >
+                                <span>&times;</span>
+                              </button>
+                            </div>
+                            <form
+                              action="/vendors/delete/images?_method=PUT"
+                              method="post"
+                            >
+                              <div class="modal-body">
+                                <div class="mb-3">
+                                  <label class="col-form-label"
+                                    >Do You Want To Delete Banner Image?
+                                  </label>
+                                  <input
+                                    class="form-control"
+                                    type="text"
+                                    name="id"
+                                    value="<%= vendor.id %>"
+                                    required
+                                  />
+
+                                  <input
+                                    class="form-control"
+                                    type="text"
+                                    name="url"
+                                    value="<%= vendor.url %>"
+                                    required
+                                  />
+                                </div>
+                              </div>
+                              <div class="modal-footer">
+                                <button
+                                  type="button"
+                                  class="btn btn-secondary"
+                                  data-dismiss="modal"
+                                >
+                                  Close
+                                </button>
+                                <button type="submit" class="btn btn-danger">
+                                  Delete
+                                </button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <% } %>
+                    <div class="col-md-5">
+                      <button
+                        type="button"
+                        class="badge btn-primary mt-4"
+                        data-toggle="modal"
+                        data-target="#exampleModalLong"
+                      >
+                        Update Banner
+                      </button>
+
+                      <div class="modal fade" id="exampleModalLong">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">Update Banner Image</h5>
+                              <button
+                                type="button"
+                                class="close"
+                                data-dismiss="modal"
+                              >
+                                <span>&times;</span>
+                              </button>
+                            </div>
+                            <form
+                              action="/vendors/edit/update/images/Banner?_method=PUT"
+                              method="post"
+                              enctype="multipart/form-data"
+                            >
+                              <div class="modal-body">
+                                <div class="mb-3">
+                                  <label class="col-form-label"
+                                    >Upload Image You Want To Update Banner
+                                    With:
+                                  </label>
+                                  <input
+                                    class="form-control"
+                                    type="file"
+                                    name="bannerImage"
+                                    required
+                                  />
+
+                                  <input
+                                    class="form-control"
+                                    type="text"
+                                    name="url"
+                                    value="<%= vendor.url %>"
+                                    required
+                                  />
+                                  <input
+                                    class="form-control"
+                                    type="hidden"
+                                    name="id"
+                                    value="<%= vendor.id %>"
+                                    required
+                                  />
+                                </div>
+                              </div>
+                              <div class="modal-footer">
+                                <button
+                                  type="button"
+                                  class="btn btn-secondary"
+                                  data-dismiss="modal"
+                                >
+                                  Close
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                  Update
+                                </button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="example-tel-input" class="col-form-label"
+                  >Gallery Image:</label
+                >
+                <!-- <button> -->
+                <!-- Button trigger modal -->
+                <button
+                  type="button"
+                  class="badge btn-primary mt-3"
+                  data-toggle="modal"
+                  data-target="#exampleModalLong-<%= vendor.id %>"
+                >
+                  Add Images
+                </button>
+
+                <div class="modal fade" id="exampleModalLong-<%= vendor.id %>">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title">Add More Images:</h5>
+                        <button
+                          type="button"
+                          class="close"
+                          data-dismiss="modal"
+                        >
+                          <span>&times;</span>
+                        </button>
+                      </div>
+                      <form
+                        action="/vendors/edit/images/gallery?_method=PUT"
+                        method="post"
+                        enctype="multipart/form-data"
+                      >
+                        <div class="modal-body">
+                          <div class="mb-3">
+                            <label class="col-form-label"
+                              >Add Images for gallery max:100
+                            </label>
+                            <input
+                              class="form-control"
+                              type="file"
+                              name="galleryImages"
+                              multiple
+                            />
+
+                            <input
+                              class="form-control"
+                              type="hidden"
+                              name="id"
+                              value="<%= vendor.id %>"
+                              required
+                            />
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="submit" class="btn btn-primary">
+                            Add Images
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <!-- fjafk;ajfk; -->
+                <div class="container">
+                  <div class="row">
+                    <% galleryUrl.forEach(function(row) { %> <% if ( row.url ==
+                    0) { %> No Gallery Image <% } else { %>
+                    <div class="card col-md-3">
+                      <img
+                        style="height: 100px"
+                        src="<%= row.url %>"
+                        class="card-img-top"
+                        alt="kuch toh hai"
+                      />
+                      <div class="row">
+                        <div class="col-md-6">
+                          <button
+                            type="button"
+                            class="badge btn-danger mt-4"
+                            data-toggle="modal"
+                            data-target="#exampleModalLong-<%= row.id %> "
+                          >
+                            Delete
+                          </button>
+
+                          <div
+                            class="modal fade"
+                            id="exampleModalLong-<%= row.id %>"
+                          >
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title">Delete Banner</h5>
+                                  <button
+                                    type="button"
+                                    class="close"
+                                    data-dismiss="modal"
+                                  >
+                                    <span>&times;</span>
+                                  </button>
+                                </div>
+                                <form
+                                  action="/vendors/delete/images?_method=PUT"
+                                  method="post"
+                                >
+                                  <div class="modal-body">
+                                    <div class="mb-3">
+                                      <label class="col-form-label"
+                                        >Do You Want To Delete Banner Image?
+                                      </label>
+                                      <input
+                                        class="form-control"
+                                        type="text"
+                                        name="id"
+                                        value="<%= vendor.id %>"
+                                        required
+                                      />
+
+                                      <input
+                                        class="form-control"
+                                        type="text"
+                                        name="url"
+                                        value="<%= row.url %>"
+                                        required
+                                      />
+                                    </div>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button
+                                      type="button"
+                                      class="btn btn-secondary"
+                                      data-dismiss="modal"
+                                    >
+                                      Close
+                                    </button>
+                                    <button
+                                      type="submit"
+                                      class="btn btn-danger"
+                                    >
+                                      Delete
+                                    </button>
+                                  </div>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <button
+                            type="button"
+                            class="badge btn-primary mt-4"
+                            data-toggle="modal"
+                            data-target="#Modalgallery<%= row.id %>"
+                          >
+                            Update
+                          </button>
+
+                          <div
+                            class="modal fade"
+                            id="Modalgallery<%= row.id %>"
+                          >
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title">
+                                    Update Gallery Image
+                                  </h5>
+                                  <button
+                                    type="button"
+                                    class="close"
+                                    data-dismiss="modal"
+                                  >
+                                    <span>&times;</span>
+                                  </button>
+                                </div>
+                                <form
+                                  action="/vendors/edit/update/images/gallery?_method=PUT"
+                                  method="post"
+                                  enctype="multipart/form-data"
+                                >
+                                  <div class="modal-body">
+                                    <div class="mb-3">
+                                      <label class="col-form-label"
+                                        >Upload New gallery Image:
+                                      </label>
+                                      <input
+                                        class="form-control"
+                                        type="file"
+                                        name="galleryImages"
+                                        required
+                                      />
+
+                                      <input
+                                        class="form-control"
+                                        type="text"
+                                        name="url"
+                                        value="<%= row.url %>"
+                                        required
+                                      />
+                                      <input
+                                        class="form-control"
+                                        type="hidden"
+                                        name="id"
+                                        value="<%= vendor.id %>"
+                                        required
+                                      />
+                                    </div>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button
+                                      type="button"
+                                      class="btn btn-secondary"
+                                      data-dismiss="modal"
+                                    >
+                                      Close
+                                    </button>
+                                    <button
+                                      type="submit"
+                                      class="btn btn-primary"
+                                    >
+                                      Update
+                                    </button>
+                                  </div>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <% } %> <% }); %>
+                  </div>
+                </div>
+              </div>
+              <form
+                action="/vendors/edit?_method=PUT"
+                method="post"
+                enctype="multipart/form-data"
+              ></form>
+            </div>
+          </div>
+        </div>
+        <!-- main content area end -->
+      </div>
+    </div>
+  </div>
+</div>

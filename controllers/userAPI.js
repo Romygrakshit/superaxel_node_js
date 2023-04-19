@@ -1,7 +1,8 @@
 const mysql = require("mysql");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
-
+const bodyParser = require("body-parser");
+const { check, validationResult } = require("express-validator");
 // Create MySQL connection pool
 const pool = mysql.createPool({
   connectionLimit: 10,
@@ -11,9 +12,32 @@ const pool = mysql.createPool({
   database: "partypal",
 });
 
+const validateInputs = [
+  check("name").notEmpty().withMessage("Name is required"),
+  check("mobile_number")
+    .isMobilePhone()
+    .isLength({ min: 10 })
+    .withMessage("Invalid mobile number"),
+  check("email")
+    .isEmail()
+    .normalizeEmail()
+    .withMessage("Invalid email address"),
+  check("age").isInt().withMessage("Age must be a number"),
+  check("password")
+    .isLength({ min: 6 })
+    .withMessage("Password must be at least 6 characters long"),
+];
 // Register User
 const registerUsers = async (req, res) => {
   const { name, mobile_number, email, age, password } = req.body;
+
+  // Define validation rules
+
+  // Check for validation errors
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
 
   // Hash password
   bcrypt.hash(password, saltRounds, (err, hash) => {
@@ -46,7 +70,6 @@ const registerUsers = async (req, res) => {
     }
   });
 };
-
 // Add User Page
 const addUsersPage = async (req, res) => {
   res.render("addUserPage");
@@ -127,4 +150,5 @@ module.exports = {
   listUsers,
   editUserPage,
   addUsersPage,
+  validateInputs,
 };

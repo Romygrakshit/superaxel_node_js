@@ -1,0 +1,185 @@
+<div class="main-content-inner">
+  <div class="row">
+    <div class="col-lg-6 col-ml-12">
+      <div class="row chan">
+        <!-- Textual inputs start -->
+        <div class="col-12 mt-5">
+          <div class="card">
+            <div class="card-body">
+              <form
+                action="/vendors/register"
+                method="post"
+                enctype="multipart/form-data"
+              >
+                <div class="form-group">
+                  <h4 class="header-title">Add New Vendor</h4>
+                  <label class="col-form-label">Vendor Name</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="property Name"
+                    id="example-text-input"
+                    name="name"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >Password</label
+                  >
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="password"
+                    name="password"
+                    id="example-text-input"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >Address</label
+                  >
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="address"
+                    name="address"
+                    id="example-text-input"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >Capacity</label
+                  >
+                  <input
+                    class="form-control"
+                    type="number"
+                    placeholder="capacity"
+                    name="capacity"
+                    id="example-text-input"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >House</label
+                  >
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="house rules"
+                    name="house_rules"
+                    id="example-text-input"
+                  />
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="terms and condition"
+                    name="tnc"
+                    id="example-text-input"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >Charges</label
+                  >
+                  <input
+                    class="form-control"
+                    type="number"
+                    placeholder="charges"
+                    name="charges"
+                    id="example-text-input"
+                  />
+
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="Charges Type"
+                    name="charges_type"
+                    id="example-text-input"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >Check In/out Timings</label
+                  >
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="check in"
+                    name="check_in"
+                    id="example-text-input"
+                  />
+
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="check out"
+                    name="check_out"
+                    id="example-text-input"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >Cordinates</label
+                  >
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="latitude"
+                    name="lat"
+                    id="example-text-input"
+                  />
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="longitude"
+                    name="lng"
+                    id="example-text-input"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="col-form-label">Host and Image</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="host name"
+                    name="host_name"
+                    id="example-text-input"
+                  />
+                  <input
+                    class="form-control"
+                    placeholder="host image"
+                    type="file"
+                    name="hostImage"
+                  />
+                </div>
+
+                <div class="mb-3">
+                  <label class="col-form-label">Add Banner Image </label>
+                  <input
+                    class="form-control"
+                    type="file"
+                    name="bannerImage"
+                    multiple
+                  />
+                  <label class="col-form-label"
+                    >Add Images for gallery max:100
+                  </label>
+                  <input
+                    class="form-control"
+                    type="file"
+                    name="galleryImages"
+                    multiple
+                  />
+                </div>
+
+                <button class="btn btn-primary mb-3">Add Vendor</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- Textual inputs end -->
+        <!-- main content area end -->
+      </div>
+    </div>
+  </div>
+</div>
