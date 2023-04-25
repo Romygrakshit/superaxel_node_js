@@ -1,0 +1,218 @@
+<div class="main-content-inner">
+  <div class="row">
+    <div class="col-lg-6 col-ml-12">
+      <div class="row">
+        <!-- Textual inputs start -->
+        <div class="col-12 mt-5">
+          <div class="card">
+            <div class="card-body">
+              <form
+                action="/enquires/register"
+                method="post"
+                enctype="multipart/form-data"
+              >
+                <div class="form-group">
+                  <h4 class="header-title">Edit Enquiry</h4>
+                  <label class="col-form-label">Garage_id</label>
+                  <input
+                    class="form-control"
+                    type="number"
+                    placeholder="Garage_id"
+                    id="example-text-input"
+                    name="garage_id"
+                    value="<%= enquiry.garage_id %>"
+                    disabled
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >Address</label
+                  >
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="Address"
+                    name="address"
+                    value="<%= enquiry.address %>"
+                    disabled
+                    id="example-text-input"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="Select">Select Company:</label>
+                  <select
+                    name="company"
+                    id="Select"
+                    class="form-control"
+                    disabled
+                  >
+                    <option><%= company.company %></option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="SelectCar">Select Car:</label>
+                  <select
+                    name="car_name"
+                    id="SelectCar"
+                    class="form-control"
+                    disabled
+                  >
+                    <option><%= car.car_name %></option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="SelectAxel" class="col-form-label"
+                    >Left Axel or Right Axel</label
+                  >
+                  <select
+                    name="axel"
+                    id="SelectAxel"
+                    class="form-control"
+                    disabled
+                  >
+                    <option><%= enquiry.axel %></option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >Cordinates</label
+                  >
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="Latitude"
+                    name="lat"
+                    id="example-text-input"
+                    value="<%= enquiry.lat %>"
+                    disabled
+                  />
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="Longitude"
+                    name="lng"
+                    id="example-text-input"
+                    value="<%= enquiry.lng %>"
+                    disabled
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >Date and Time</label
+                  >
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="City"
+                    name="date_time"
+                    id="example-text-input"
+                    value="<%= enquiry.date_time %>"
+                    disabled
+                  />
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 mt-5">
+          <% imagesUrl.forEach(function(row) { %>
+          <div class="card col-md-12">
+            <!-- Textual inputs end -->
+            <% if ( row.url == 0) { %> No Image <% } else { %>
+
+            <img
+              style="height: 300px; width: 300px"
+              src="<%= row.url %>"
+              class="card-img-top"
+              alt="kuch toh hai"
+            />
+          </div>
+          <% } %> <% }); %>
+        </div>
+        <!-- Update Password -->
+        <div class="col-6 mt-5">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="header-title">
+                Update Offered Price and status for: <%= enquiry.garage_id %>
+              </h4>
+              <form action="/enquires/update?_method=PUT" method="post">
+                <div class="form-group">
+                  <label for="exampleInputEmail1"
+                    >Write New Offered Price:</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="offered_price"
+                    placeholder="offered Price"
+                    value="<%= enquiry.offered_price %>"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="SelectStatus">Select Status:</label>
+                  <select name="status" id="SelectStatus" class="form-control/">
+                    <option selected disabled><%= enquiry.status %></option>
+                    <% if (enquiry.status == "Pending") { %>
+                    <option>Assigned</option>
+                    <option>Completed</option>
+                    <option>Cancelled</option>
+                    <% } else if (enquiry.status == "Assigned") { %>
+                    <option>Pending</option>
+                    <option>Completed</option>
+                    <option>Cancelled</option>
+
+                    <% } else if (enquiry.status == "Completed") { %>
+                    <option>Pending</option>
+                    <option>Assigned</option>
+                    <option>Cancelled</option>
+
+                    <% } else if (enquiry.status == "Cancelled") { %>
+                    <option>Pending</option>
+                    <option>Assigned</option>
+                    <option>Completed</option>
+                    <% } %>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="SelectBoy">Select Delivery Boy:</label>
+                  <select
+                    name="delivery_boy"
+                    id="SelectStatus"
+                    class="form-control/"
+                  >
+                    <% boy.forEach((row) => { %>
+                    <option value="<%= row.delivery_boy %>">
+                      <%= row.name %>
+                    </option>
+
+                    <% }); %>
+                  </select>
+                </div>
+
+                <input
+                  class="form-control"
+                  type="text"
+                  name="id"
+                  value="<%= enquiryId.id %>"
+                  required
+                />
+
+                <button type="submit" class="btn btn-primary mb-3">
+                  Update
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- basic form end -->
+
+        <!-- main content area end -->
+      </div>
+    </div>
+  </div>
+</div>

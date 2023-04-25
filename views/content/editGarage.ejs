@@ -1,0 +1,329 @@
+<div class="main-content-inner">
+  <div class="row">
+    <div class="col-lg-6 col-ml-12">
+      <div class="row">
+        <!-- Textual inputs start -->
+        <div class="col-6 mt-5">
+          <div class="card">
+            <div class="card-body">
+              <form action="/garages/edit?_method=PUT" method="post">
+                <div class="form-group">
+                  <h4 class="header-title">
+                    Edit Garage: <%= garage.garage_name %>
+                  </h4>
+
+                  <label class="col-form-label">Name</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="Garage Name"
+                    id="example-text-input"
+                    name="garage_name"
+                    value="<%= garage.garage_name %>"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <!-- <label for="inputPassword" class="">ID</label> -->
+                  <input
+                    type="hidden"
+                    class="form-control"
+                    name="id"
+                    value="<%= garage.id %>"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >Address</label
+                  >
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="Address"
+                    name="address"
+                    value="<%= garage.address %>"
+                    id="example-text-input"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >City</label
+                  >
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="City"
+                    name="city"
+                    value="<%= garage.city %>"
+                    id="example-text-input"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="Select">Select State:</label>
+                  <select name="state" id="Select" class="form-control">
+                    <option><%= garage.state %></option>
+
+                    <% states.forEach((row) => { %>
+
+                    <option><%= row.state %></option>
+
+                    <% }); %>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >Cordinates</label
+                  >
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="latitude"
+                    name="lat"
+                    value="<%= garage.lat %>"
+                    id="example-text-input"
+                    required
+                  />
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="longitude"
+                    name="lng"
+                    value="<%= garage.lng %>"
+                    id="example-text-input"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >Mobile Number</label
+                  >
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="Mobile Number"
+                    name="mobile_number"
+                    value="<%= garage.mobile_number %>"
+                    id="example-text-input"
+                    required
+                  />
+                </div>
+
+                <button class="btn btn-primary mb-3">Save</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- Textual inputs end -->
+        <!-- Update Password -->
+        <div class="col-6 mt-5">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="header-title">
+                Update Password for: <%= garage.garage_name %>
+              </h4>
+              <form action="/garages/edit/password?_method=PUT" method="post">
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Write New Password:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="password"
+                    placeholder="password"
+                    value=""
+                    required
+                  />
+                </div>
+
+                <input
+                  class="form-control"
+                  type="hidden"
+                  name="id"
+                  value="<%= garage.id %>"
+                  required
+                />
+
+                <button type="submit" class="btn btn-primary mb-3">
+                  Update Password
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- basic form end -->
+        <div class="col-12 mt-5">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="header-title">
+                Images for: <%= garage.garage_name %>
+              </h4>
+              <div class="form-group">
+                <label for="example-tel-input" class="col-form-label"
+                  >Profile Image:</label
+                >
+                <div class="card col-md-5">
+                  <% if ( garage .url == 0) { %> No Profile Image <% } else { %>
+                  <img
+                    style="height: 150px; width: 200px"
+                    src="<%= garage.url %>"
+                    width="100px"
+                  />
+
+                  <div class="row">
+                    <div class="col-md-5">
+                      <button
+                        type="button"
+                        class="badge btn-danger mt-4"
+                        data-toggle="modal"
+                        data-target="#exampleModalLong-deleteBanner "
+                      >
+                        Delete Profile Image
+                      </button>
+
+                      <div
+                        class="modal fade"
+                        id="exampleModalLong-deleteBanner"
+                      >
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">Delete Profile Image</h5>
+                              <button
+                                type="button"
+                                class="close"
+                                data-dismiss="modal"
+                              >
+                                <span>&times;</span>
+                              </button>
+                            </div>
+                            <form
+                              action="/garages/delete/images?_method=PUT"
+                              method="post"
+                            >
+                              <div class="modal-body">
+                                <div class="mb-3">
+                                  <label class="col-form-label"
+                                    >Do You Want To Delete Banner Image?
+                                  </label>
+                                  <input
+                                    class="form-control"
+                                    type="text"
+                                    name="id"
+                                    value="<%= garage.id %>"
+                                    required
+                                  />
+
+                                  <input
+                                    class="form-control"
+                                    type="text"
+                                    name="url"
+                                    value="<%= garage.url %>"
+                                    required
+                                  />
+                                </div>
+                              </div>
+                              <div class="modal-footer">
+                                <button
+                                  type="button"
+                                  class="btn btn-secondary"
+                                  data-dismiss="modal"
+                                >
+                                  Close
+                                </button>
+                                <button type="submit" class="btn btn-danger">
+                                  Delete
+                                </button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <% } %>
+                    <div class="col-md-5">
+                      <button
+                        type="button"
+                        class="badge btn-primary mt-4"
+                        data-toggle="modal"
+                        data-target="#exampleModalLong"
+                      >
+                        Update Profile Image
+                      </button>
+
+                      <div class="modal fade" id="exampleModalLong">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">Update Profile Image</h5>
+                              <button
+                                type="button"
+                                class="close"
+                                data-dismiss="modal"
+                              >
+                                <span>&times;</span>
+                              </button>
+                            </div>
+                            <form
+                              action="/garages/edit/update/images/profile?_method=PUT"
+                              method="post"
+                              enctype="multipart/form-data"
+                            >
+                              <div class="modal-body">
+                                <div class="mb-3">
+                                  <label class="col-form-label"
+                                    >Upload Image You Want To Update Profile
+                                    Image With:
+                                  </label>
+                                  <input
+                                    class="form-control"
+                                    type="file"
+                                    name="profileImage"
+                                    required
+                                  />
+
+                                  <input
+                                    class="form-control"
+                                    type="text"
+                                    name="url"
+                                    value="<%= garage.url %>"
+                                    required
+                                  />
+                                  <input
+                                    class="form-control"
+                                    type="hidden"
+                                    name="id"
+                                    value="<%= garage.id %>"
+                                    required
+                                  />
+                                </div>
+                              </div>
+                              <div class="modal-footer">
+                                <button
+                                  type="button"
+                                  class="btn btn-secondary"
+                                  data-dismiss="modal"
+                                >
+                                  Close
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                  Update
+                                </button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- main content area end -->
+      </div>
+    </div>
+  </div>
+</div>

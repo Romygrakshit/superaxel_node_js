@@ -1,0 +1,138 @@
+<div class="main-content-inner">
+  <div class="row">
+    <div class="col-lg-6 col-ml-12">
+      <div class="row chan">
+        <!-- Textual inputs start -->
+        <div class="col-12 mt-5">
+          <div class="card">
+            <div class="card-body">
+              <form
+                action="/enquires/register"
+                method="post"
+                enctype="multipart/form-data"
+              >
+                <div class="form-group">
+                  <h4 class="header-title">Add New Enquiry</h4>
+                  <label class="col-form-label">Garage_id</label>
+                  <input
+                    class="form-control"
+                    type="number"
+                    placeholder="Garage_id"
+                    id="example-text-input"
+                    name="garage_id"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >Address</label
+                  >
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="Address"
+                    name="address"
+                    id="example-text-input"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="Select">Select Company:</label>
+                  <select name="company" id="Select" class="form-control">
+                    <% company.forEach((row) => { %>
+                    <option><%= row.company %></option>
+
+                    <% }); %>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="SelectCar">Select Car:</label>
+                  <select name="car_name" id="SelectCar" class="form-control">
+                    <% car.forEach((row) => { %>
+                    <option><%= row.car_name %></option>
+
+                    <% }); %>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="SelectAxel" class="col-form-label"
+                    >Left Axel or Right Axel</label
+                  >
+                  <select name="axel" id="SelectAxel" class="form-control">
+                    <option>Left</option>
+                    <option>Right</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label class="col-form-label">Add Images </label>
+                  <input
+                    class="form-control"
+                    type="file"
+                    name="enquiryImages"
+                    multiple
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >Cordinates</label
+                  >
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="Latitude"
+                    name="lat"
+                    id="example-text-input"
+                  />
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="Longitude"
+                    name="lng"
+                    id="example-text-input"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="Select">Select State:</label>
+                  <select name="state" id="Select" class="form-control">
+                    <% states.forEach((row) => { %>
+                    <option><%= row.state %></option>
+
+                    <% }); %>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >City</label
+                  >
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="City"
+                    name="city"
+                    id="example-text-input"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >Offered Price</label
+                  >
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="offered Price"
+                    name="offered_price"
+                    id="example-text-input"
+                  />
+                </div>
+                <button class="btn btn-primary mb-3">Add Enquiry</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- Textual inputs end -->
+        <!-- main content area end -->
+      </div>
+    </div>
+  </div>
+</div>

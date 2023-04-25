@@ -1,9 +1,23 @@
 const express = require("express");
 const app = express();
 const expressLayouts = require("express-ejs-layouts");
+const bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({ extended: true }));
 
-const methodOverride = require("method-override");
+// handle form data
+app.use(express.urlencoded({ extended: true }));
+
 const port = process.env.port || 3000;
+//
+const mysql = require("mysql");
+app.use(bodyParser.json());
+const pool = mysql.createPool({
+  connectionLimit: 10,
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "superaxel",
+});
 
 // Set Templating Engine
 app.use(expressLayouts);
@@ -18,50 +32,68 @@ app.use("/js", express.static(__dirname + "public/js"));
 app.use("/img", express.static(__dirname + "public/img"));
 app.use("/fonts", express.static(__dirname + "public/fonts"));
 
-const bodyParser = require("body-parser");
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-// Middleware for html form method
-app.use(methodOverride("_method"));
-// handle form data
-app.use(express.urlencoded({ extended: true }));
-
 // Routes
-const categories_routes = require("./routes/categoriesRoutes");
-const sub_categories_routes = require("./routes/subCategoriesRoutes");
-const users_routes = require("./routes/usersRoutes");
-const clubs_routes = require("./routes/clubsRoutes");
-const vendors_routes = require("./routes/vendorsRoutes");
-const events_routes = require("./routes/eventsRoutes");
-const tickets_routes = require("./routes/ticketsRoutes");
+const companies_routes = require("./routes/companiesRoutes");
+const cars_routes = require("./routes/carsRoutes");
+const sub_admins = require("./routes/subAdminsRoutes");
+const garages_routes = require("./routes/garagesRoutes");
+const enquires_routes = require("./routes/enquiresRoutes");
 
 // middleware for routes
-app.use("/categories", categories_routes);
-app.use("/sub/categories", sub_categories_routes);
-app.use("/users", users_routes);
-app.use("/clubs", clubs_routes);
-app.use("/vendors", vendors_routes);
-app.use("/events", events_routes);
-app.use("/tickets", tickets_routes);
+app.use("/companies", companies_routes);
+app.use("/cars", cars_routes);
+app.use("/subadmins", sub_admins);
+app.use("/garages", garages_routes);
+app.use("/enquires", enquires_routes);
 
 // app.post("/days", (req, res) => {
-//   const { day_name } = req.body;
-//   pool.query(
-//     "INSERT INTO days SET ?",
-//     {
-//       day_name,
-//     },
-//     (err, results) => {
+//   const { name } = req.body;
+//   const state = [
+//     "Andhra Pradesh",
+//     "Arunachal Pradesh",
+//     "Assam",
+//     "Bihar",
+//     "Chhattisgarh",
+//     "Goa",
+//     "Gujarat",
+//     "Haryana",
+//     "Himachal Pradesh",
+//     "Jammu and Kashmir",
+//     "Jharkhand",
+//     "Karnataka",
+//     "Kerala",
+//     "Madhya Pradesh",
+//     "Maharashtra",
+//     "Manipur",
+//     "Meghalaya",
+//     "Mizoram",
+//     "Nagaland",
+//     "Odisha",
+//     "Punjab",
+//     "Rajasthan",
+//     "Sikkim",
+//     "Tamil Nadu",
+//     "Telangana",
+//     "Tripura",
+//     "Uttarakhand",
+//     "Uttar Pradesh",
+//     "West Bengal",
+//     "Andaman and Nicobar Islands",
+//     "Chandigarh",
+//     "Dadra and Nagar Haveli",
+//     "Daman and Diu",
+//     "Delhi",
+//     "Lakshadweep",
+//     "Puducherry",
+//   ];
+//   state.forEach((state) => {
+//     pool.query(`INSERT INTO states SET ?`, { state }, (err, results) => {
 //       if (err) {
 //         console.error(err);
-//         res.sendStatus(500);
-//       } else {
-//         res.sendStatus(200);
 //       }
-//     }
-//   );
+//     });
+//   });
+//   res.sendStatus(200);
 // });
 
 // Starting server

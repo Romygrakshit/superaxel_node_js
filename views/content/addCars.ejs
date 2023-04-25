@@ -1,0 +1,89 @@
+<div class="main-content-inner">
+  <div class="row">
+    <div class="col-lg-6 col-ml-12">
+      <div class="row">
+        <!-- Textual inputs start -->
+        <div class="col-12 mt-5">
+          <div class="card">
+            <div class="card-body">
+              <form action="/cars/create" method="post">
+                <div class="form-group">
+                  <h4 class="header-title">Add New Car</h4>
+                  <label class="col-form-label">Car Name</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="Name"
+                    id="example-text-input"
+                    name="car_name"
+                    required
+                  />
+                </div>
+
+                <div class="form-group">
+                  <div class="form-group">
+                    <label for="Select"
+                      >Select Company (if not in list add company first):</label
+                    >
+                    <select name="company" id="Select" class="form-control">
+                      <% company.forEach((row) => { %>
+
+                      <option><%= row.company %></option>
+                      <% }); %>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >Left Axel Price</label
+                  >
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="Left Axel Price"
+                    name="left_axel_price"
+                    id="example-text-input"
+                    required
+                  />
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="Left Inventory"
+                    name="left_inventory"
+                    id="example-text-input"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >Right Axel Price</label
+                  >
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="Right Axel Price"
+                    name="right_axel_price"
+                    id="example-text-input"
+                    required
+                  />
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="Right Inventory"
+                    name="right_inventory"
+                    id="example-text-input"
+                    required
+                  />
+                </div>
+                <button class="btn btn-primary mb-3">Add Car</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- Textual inputs end -->
+
+        <!-- main content area end -->
+      </div>
+    </div>
+  </div>
+</div>

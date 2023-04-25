@@ -1,0 +1,116 @@
+<div class="main-content-inner">
+  <div class="row">
+    <div class="col-lg-6 col-ml-12">
+      <div class="row chan">
+        <!-- Textual inputs start -->
+        <div class="col-12 mt-5">
+          <div class="card">
+            <div class="card-body">
+              <form
+                action="/garages/register"
+                method="post"
+                enctype="multipart/form-data"
+              >
+                <div class="form-group">
+                  <h4 class="header-title">Add New Garage</h4>
+                  <label class="col-form-label">Garage Name</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="Name"
+                    id="example-text-input"
+                    name="garage_name"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >Password</label
+                  >
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="Password"
+                    name="password"
+                    id="example-text-input"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >Mobile Number</label
+                  >
+                  <input
+                    class="form-control"
+                    type="tel"
+                    placeholder="Mobile Number"
+                    name="mobile_number"
+                    id="example-text-input"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="col-form-label">Add Profile Image </label>
+                  <input class="form-control" type="file" name="profileImage" />
+                </div>
+
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >Address</label
+                  >
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="Address"
+                    name="address"
+                    id="example-text-input"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="Select">Select State:</label>
+                  <select name="state" id="Select" class="form-control">
+                    <% states.forEach((row) => { %>
+                    <option><%= row.state %></option>
+
+                    <% }); %>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >City</label
+                  >
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="City"
+                    name="city"
+                    id="example-text-input"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
+                    >Cordinates</label
+                  >
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="Latitude"
+                    name="lat"
+                    id="example-text-input"
+                  />
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="Longitude"
+                    name="lng"
+                    id="example-text-input"
+                  />
+                </div>
+                <button class="btn btn-primary mb-3">Add Garage</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- Textual inputs end -->
+        <!-- main content area end -->
+      </div>
+    </div>
+  </div>
+</div>

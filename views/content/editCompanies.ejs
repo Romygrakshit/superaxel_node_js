@@ -1,0 +1,45 @@
+<div class="main-content-inner">
+  <div class="row">
+    <div class="col-lg-6 col-ml-12">
+      <div class="row">
+        <!-- Textual inputs start -->
+        <div class="col-12 mt-5">
+          <div class="card">
+            <div class="card-body">
+              <form action="/companies/edit?_method=PUT" method="post">
+                <div class="form-group">
+                  <h4 class="header-title">
+                    Edit Company:<%= company.company %>
+                  </h4>
+                  <label class="col-form-label">Company Name</label>
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="Name"
+                    name="company"
+                    value="<%= company.company %>"
+                    required
+                  />
+                </div>
+
+                <div class="form-group">
+                  <input
+                    class="form-control"
+                    type="hidden"
+                    placeholder="order_number"
+                    name="id"
+                    value="<%= company.id %>"
+                  />
+                </div>
+                <button class="btn btn-primary mb-3">Update Company</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- Textual inputs end -->
+
+        <!-- main content area end -->
+      </div>
+    </div>
+  </div>
+</div>
