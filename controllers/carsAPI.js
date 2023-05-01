@@ -114,7 +114,7 @@ const deleteCars = async (req, res) => {
 // category List
 const listCars = async (req, res) => {
   pool.query(
-    "SELECT cars.id as car_id, car_name, company_id, left_axel_price, right_axel_price, left_inventory, right_inventory, deleted, companies.id as company_id, company FROM cars INNER JOIN companies ON cars.company_id = companies.id",
+    "SELECT cars.id as car_id, car_name, company_id, deleted, companies.id as company_id, company FROM cars INNER JOIN companies ON cars.company_id = companies.id",
     (err, results) => {
       if (err) {
         console.error(err);
@@ -141,7 +141,7 @@ const addCarsPage = async (req, res) => {
 const editCarsPage = async (req, res) => {
   const id = req.params.id;
   pool.query(
-    `SELECT cars.id as car_id, car_name, company_id, left_axel_price, right_axel_price, left_inventory, right_inventory, deleted, companies.id as company_id, company FROM cars INNER JOIN companies ON cars.company_id = companies.id WHERE cars.id =${id}`,
+    `SELECT cars.id as car_id, car_name, company_id, deleted, companies.id as company_id, company FROM cars INNER JOIN companies ON cars.company_id = companies.id WHERE cars.id =${id}`,
     (err, results) => {
       if (err) {
         console.error(err);

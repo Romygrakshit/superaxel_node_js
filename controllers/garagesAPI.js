@@ -302,25 +302,19 @@ const addGaragePage = async (req, res) => {
 
 const updateGaragePassword = async (req, res, next) => {
   const { password, id } = req.body;
-  bcrypt.hash(password, saltRounds, (err, hash) => {
-    if (err) {
-      console.error(err);
-      res.sendStatus(500);
-    } else {
-      pool.query(
-        "UPDATE garages SET password = ? WHERE id = ?",
-        [hash, id],
-        (err, results) => {
-          if (err) {
-            console.error(err);
-            res.sendStatus(500);
-          } else {
-            res.redirect("/garages/edit/page/" + id);
-          }
-        }
-      );
+
+  pool.query(
+    "UPDATE garages SET password = ? WHERE id = ?",
+    [hash, id],
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        res.sendStatus(500);
+      } else {
+        res.redirect("/garages/edit/page/" + id);
+      }
     }
-  });
+  );
 };
 
 module.exports = {

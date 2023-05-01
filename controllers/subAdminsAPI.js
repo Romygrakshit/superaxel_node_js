@@ -1,7 +1,6 @@
 const mysql = require("mysql");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
-const bodyParser = require("body-parser");
 const { check, validationResult } = require("express-validator");
 // Create MySQL connection pool
 const pool = mysql.createPool({

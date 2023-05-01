@@ -1,0 +1,144 @@
+<div class="main-content-inner">
+  <div class="row">
+    <!-- Dark table start -->
+    <div class="col-12 mt-5">
+      <div class="card">
+        <div class="card-body">
+          <form action="/inventory/list/sub?_method=PUT" method="post">
+            <div class="form-group">
+              <label for="Select">Select SubAdmin:</label>
+              <select name="Id" id="Select" class="form-control">
+                <option selected value="<%= subadmin.id %>">
+                  <%= subadmin.name %>
+                </option>
+                <% subadmins.forEach((row) => { %>
+                <option value="<%= row.id %>"><%= row.name %></option>
+                <% }); %>
+              </select>
+            </div>
+            <button class="btn btn-primary mb-3">Select</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <% if (subadmin.id > 1) { %>
+    <div class="col-12 mt-5">
+      <div class="card">
+        <div class="card-body">
+          <div class="mang">
+            <h4 class="header-title">Manage Inventory</h4>
+          </div>
+
+          <div class="data-tables datatable-dark">
+            <table id="dataTable3" class="text-center">
+              <thead class="text-capitalize">
+                <tr>
+                  <th>ID</th>
+                  <th>Company</th>
+                  <th>Car</th>
+                  <th>Left Axel Price</th>
+                  <th>Left Axel Inventory</th>
+                  <th>Left Axel Price</th>
+                  <th>Right Axel Inventory</th>
+                  <th>Change Inventory</th>
+
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% inventory.forEach((row) => { %>
+                <tr>
+                  <td><%= row.in_id %></td>
+                  <td><%= row.company %></td>
+                  <td><%= row.car_name %></td>
+                  <td><%= row.left_axel_price %></td>
+                  <td><%= row.left_axel_inventory %></td>
+                  <td><%= row.right_axel_price %></td>
+                  <td><%= row.right_axel_inventory %></td>
+                  <td>
+                    <button
+                      type="button"
+                      class="btn btn-success mt-3"
+                      data-toggle="modal"
+                      data-target="#exampleModalLong"
+                    >
+                      Update Inventory
+                    </button>
+
+                    <div class="modal fade" id="exampleModalLong">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title">Update Inventory</h5>
+                            <button
+                              type="button"
+                              class="close"
+                              data-dismiss="modal"
+                            >
+                              <span>&times;</span>
+                            </button>
+                          </div>
+                          <form
+                            action="/inventory/change?_method=PUT"
+                            method="post"
+                          >
+                            <div class="modal-body">
+                              <div class="form-group">
+                                <label for="Select">Select inventory:</label>
+                                <select
+                                  name="inventory"
+                                  id="Select"
+                                  class="form-control"
+                                >
+                                  <option>Left Axel</option>
+                                  <option>Right Axel</option>
+                                </select>
+                                <label for="Select">Add or Deduct:</label>
+                                <select
+                                  name="type"
+                                  id="Select"
+                                  class="form-control"
+                                >
+                                  <option>Add</option>
+                                  <option>Deduct</option>
+                                </select>
+                                <label for="Select">Stock Amount:</label>
+                                <input
+                                  class="form-control"
+                                  type="text"
+                                  name="stock"
+                                  value=""
+                                />
+                                <input
+                                  class="form-control"
+                                  type="hidden"
+                                  name="id"
+                                  value="<%= row.in_id %>"
+                                />
+                              </div>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="submit" class="btn btn-danger">
+                                Save changes
+                              </button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+
+                  <td></td>
+                </tr>
+
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% } %>
+    <!-- Dark table end -->
+  </div>
+</div>
