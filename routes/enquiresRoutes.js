@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const garageApi = require("../controllers/api/enquiryAPI");
 
 const {
   newEnquires,
@@ -14,5 +15,6 @@ router.route("/add").get(addEnquiryPage);
 router.route("/update").put(updateEnquiry);
 router.route("/edit/page/:id").get(editEnquiryPage);
 router.route("/list").get(listEnquires);
+router.get("/api/list", garageApi.listEnquires);
 
 module.exports = router;
