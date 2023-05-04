@@ -173,6 +173,7 @@ module.exports.login_garage = async (req, res) => {
               token: jwt.sign({ mobile_number }, "superaxel", {
                 expiresIn: "10000000000",
               }),
+              garage: results[0],
             },
           });
         } else {
