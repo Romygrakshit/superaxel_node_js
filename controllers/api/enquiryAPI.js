@@ -49,74 +49,220 @@ module.exports.listEnquires = async (req, res) => {
 };
 
 module.exports.newEnquires = async (req, res, next) => {
+  //   try {
+  //     await upload.fields([{ name: "enquiryImages", maxCount: 9 }]);
+
+  //     const status = "pending";
+  //     const {
+  //       garage_id,
+  //       address,
+  //       lat,
+  //       lng,
+  //       company,
+  //       car_name,
+  //       axel,
+  //       offered_price,
+  //     } = req.body;
+
+  //     const imageUrls = req.files["enquiryImages"].map((file) => {
+  //       return "/../img/enquires/" + file.filename;
+  //     });
+  //     imageUrls.forEach((imageUrls) => {
+  //       pool.query(
+  //         "INSERT INTO images SET ?",
+  //         { url: imageUrls },
+  //         (err, results) => {
+  //           if (err) {
+  //             console.error(err);
+  //           } else {
+  //           }
+  //         }
+  //       );
+  //     });
+
+  //     let result = await pool.query(`SELECT * FROM companies WHERE company = ?`, [
+  //       company,
+  //     ]);
+
+  //     console.log(result);
+  //     const company_id = result.id;
+
+  //     result = await pool.query(
+  //       `SELECT * FROM cars WHERE car_name = ? AND company_id = ?`,
+  //       [car_name, company_id]
+  //     );
+
+  //     console.log(result);
+  //     const car_id = result.id;
+
+  //     let image_ids = [];
+  //     let promises = [];
+  //     const separator = "-";
+  //     imageUrls.forEach((imageUrl) => {
+  //       let promise = new Promise((resolve, reject) => {
+  //         pool.query(
+  //           `SELECT * FROM images WHERE url = ?`,
+  //           [imageUrl],
+  //           (err, results) => {
+  //             if (err) {
+  //               console.error(err);
+  //               reject(err);
+  //             } else {
+  //               image_ids.push(results[0].id);
+  //               resolve();
+  //             }
+  //           }
+  //         );
+  //       });
+  //       promises.push(promise);
+  //     });
+  //     Promise.all(promises).then(() => {
+  //       const images_id = image_ids.join(separator);
+
+  //       pool.query(
+  //         "INSERT INTO enquires SET ?",
+  //         {
+  //           garage_id,
+  //           address,
+  //           lat,
+  //           lng,
+  //           company_id,
+  //           car_id,
+  //           axel,
+  //           offered_price,
+  //           status,
+  //           images_id,
+  //         },
+  //         (err, results) => {
+  //           if (err) {
+  //             console.error(err);
+  //             res.sendStatus(500);
+  //           } else {
+  //             console.log("success");
+  //             res.status(404).json({ success: true });
+  //           }
+  //         }
+  //       );
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //     res.json({ success: false, message: error });
+  //   }
+  // };
+
   try {
-    await upload.fields([{ name: "enquiryImages", maxCount: 9 }]);
+    upload.fields([{ name: "enquiryImages", maxCount: 9 }])(req, res, (err) => {
+      if (err) {
+        console.error(err);
+        res.sendStatus(500);
+        return;
+      }
+      const status = "pending";
+      const {
+        garage_id,
+        address,
+        lat,
+        lng,
+        company,
+        car_name,
+        axel,
+        offered_price,
+      } = req.body;
 
-    const status = "pending";
-    const {
-      garage_id,
-      address,
-      lat,
-      lng,
-      company,
-      car_name,
-      axel,
-      offered_price,
-    } = req.body;
-
-    const imageUrls = req.files["enquiryImages"].map((file) => {
-      return "/../img/enquires/" + file.filename;
-    });
-    imageUrls.forEach((imageUrls) => {
-      pool.query(
-        "INSERT INTO images SET ?",
-        { url: imageUrls },
-        (err, results) => {
-          if (err) {
-            console.error(err);
-          } else {
-          }
-        }
-      );
-    });
-
-    let result = await pool.query(`SELECT * FROM companies WHERE company = ?`, [
-      company,
-    ]);
-
-    console.log(result);
-    const company_id = result.id;
-
-    result = await pool.query(
-      `SELECT * FROM cars WHERE car_name = ? AND company_id = ?`,
-      [car_name, company_id]
-    );
-
-    console.log(result);
-    const car_id = result.id;
-
-    let image_ids = [];
-    let promises = [];
-    const separator = "-";
-    imageUrls.forEach((imageUrl) => {
-      let promise = new Promise((resolve, reject) => {
+      const imageUrls = req.files["enquiryImages"].map((file) => {
+        return "/../img/enquires/" + file.filename;
+      });
+      imageUrls.forEach((imageUrls) => {
         pool.query(
-          `SELECT * FROM images WHERE url = ?`,
-          [imageUrl],
+          "INSERT INTO images SET ?",
+          { url: imageUrls },
           (err, results) => {
             if (err) {
               console.error(err);
-              reject(err);
             } else {
-              image_ids.push(results[0].id);
-              resolve();
             }
           }
         );
       });
-      promises.push(promise);
+      pool.query(
+        `SELECT * FROM companies WHERE company = ?`,
+        [company],
+        (err, results) => {
+          if (err) {
+            console.error(err);
+          } else {
+            const company_id = results[0].id;
+            pool.query(
+              `SELECT * FROM cars WHERE car_name = ? AND company_id = ?`,
+              [car_name, company_id],
+              (err, results) => {
+                console.log(results);
+                if (err) {
+                  console.error(err);
+                } else {
+                  const car_id = results[0].id;
+                  insertData(
+                    garage_id,
+                    address,
+                    lat,
+                    lng,
+                    company_id,
+                    car_id,
+                    axel,
+                    offered_price,
+                    status,
+                    imageUrls,
+                    res
+                  );
+                }
+              }
+            );
+          }
+        }
+      );
     });
-    Promise.all(promises).then(() => {
+  } catch (err) {
+    res.sendStatus(500);
+    console.log(err);
+  }
+};
+
+const insertData = async (
+  garage_id,
+  address,
+  lat,
+  lng,
+  company_id,
+  car_id,
+  axel,
+  offered_price,
+  status,
+  imageUrls,
+  res
+) => {
+  let image_ids = [];
+  let promises = [];
+  const separator = "-";
+  imageUrls.forEach((imageUrl) => {
+    let promise = new Promise((resolve, reject) => {
+      pool.query(
+        `SELECT * FROM images WHERE url = ?`,
+        [imageUrl],
+        (err, results) => {
+          if (err) {
+            console.error(err);
+            reject(err);
+          } else {
+            image_ids.push(results[0].id);
+            resolve();
+          }
+        }
+      );
+    });
+    promises.push(promise);
+  });
+  Promise.all(promises)
+    .then(() => {
       const images_id = image_ids.join(separator);
 
       pool.query(
@@ -138,162 +284,15 @@ module.exports.newEnquires = async (req, res, next) => {
             console.error(err);
             res.sendStatus(500);
           } else {
+            console.log(results)
             console.log("success");
             res.status(404).json({ success: true });
           }
         }
       );
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
     });
-  } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: error });
-  }
 };
-
-//   try {
-//     upload.fields([{ name: "enquiryImages", maxCount: 9 }])(req, res, (err) => {
-//       if (err) {
-//         console.error(err);
-//         res.sendStatus(500);
-//         return;
-//       }
-//       const status = "pending";
-//       const {
-//         garage_id,
-//         address,
-//         lat,
-//         lng,
-//         company,
-//         car_name,
-//         axel,
-//         offered_price,
-//       } = req.body;
-
-//       const imageUrls = req.files["enquiryImages"].map((file) => {
-//         return "/../img/enquires/" + file.filename;
-//       });
-//       imageUrls.forEach((imageUrls) => {
-//         pool.query(
-//           "INSERT INTO images SET ?",
-//           { url: imageUrls },
-//           (err, results) => {
-//             if (err) {
-//               console.error(err);
-//             } else {
-//             }
-//           }
-//         );
-//       });
-//       pool.query(
-//         `SELECT * FROM companies WHERE company = ?`,
-//         [company],
-//         (err, results) => {
-//           if (err) {
-//             console.error(err);
-//           } else {
-//             console.log(results);
-//             const company_id = results.id;
-//             pool.query(
-//               `SELECT * FROM cars WHERE car_name = ? AND company_id = ?`,
-//               [car_name, company_id],
-//               (err, results) => {
-//                 console.log(results.toString());
-//                 if (err) {
-//                   console.error(err);
-//                 } else {
-//                   const car_id = results.id;
-//                   insertData(
-//                     garage_id,
-//                     address,
-
-//                     lat,
-//                     lng,
-//                     company_id,
-//                     car_id,
-//                     axel,
-//                     offered_price,
-//                     status,
-//                     imageUrls,
-//                     res
-//                   );
-//                 }
-//               }
-//             );
-//           }
-//         }
-//       );
-//     });
-//   } catch (err) {
-//     res.sendStatus(500);
-//     console.log(err);
-//   }
-// };
-
-// const insertData = async (
-//   garage_id,
-//   address,
-//   lat,
-//   lng,
-//   company_id,
-//   car_id,
-//   axel,
-//   offered_price,
-//   status,
-//   imageUrls,
-//   res
-// ) => {
-//   let image_ids = [];
-//   let promises = [];
-//   const separator = "-";
-//   imageUrls.forEach((imageUrl) => {
-//     let promise = new Promise((resolve, reject) => {
-//       pool.query(
-//         `SELECT * FROM images WHERE url = ?`,
-//         [imageUrl],
-//         (err, results) => {
-//           if (err) {
-//             console.error(err);
-//             reject(err);
-//           } else {
-//             image_ids.push(results[0].id);
-//             resolve();
-//           }
-//         }
-//       );
-//     });
-//     promises.push(promise);
-//   });
-//   Promise.all(promises)
-//     .then(() => {
-//       const images_id = image_ids.join(separator);
-
-//       pool.query(
-//         "INSERT INTO enquires SET ?",
-//         {
-//           garage_id,
-//           address,
-//           lat,
-//           lng,
-//           company_id,
-//           car_id,
-//           axel,
-//           offered_price,
-//           status,
-//           images_id,
-//         },
-//         (err, results) => {
-//           if (err) {
-//             console.error(err);
-//             res.sendStatus(500);
-//           } else {
-//             console.log("success");
-//             res.status(404).json({ success: true });
-//           }
-//         }
-//       );
-//     })
-//     .catch((err) => {
-//       console.error(err);
-//       res.sendStatus(500);
-//     });
-// };
