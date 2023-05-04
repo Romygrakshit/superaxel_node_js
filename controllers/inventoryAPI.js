@@ -5,7 +5,8 @@ const pool = mysql.createPool({
   connectionLimit: 10,
   host: "localhost",
   user: "root",
-  password: "",
+  port: "3308",
+  password: "password",
   database: "superaxel",
 });
 

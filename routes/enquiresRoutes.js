@@ -16,5 +16,6 @@ router.route("/update").put(updateEnquiry);
 router.route("/edit/page/:id").get(editEnquiryPage);
 router.route("/list").get(listEnquires);
 router.get("/api/list", garageApi.listEnquires);
+router.post("/api/create", garageApi.newEnquires); 
 
 module.exports = router;

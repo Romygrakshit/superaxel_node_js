@@ -4,7 +4,8 @@ const pool = mysql.createPool({
   connectionLimit: 10,
   host: "localhost",
   user: "root",
-  password: "",
+  port: "3308",
+  password: "password",
   database: "superaxel",
 });
 // create category in database
@@ -90,8 +91,7 @@ const editCars = async (req, res) => {
               console.error(err);
               res.sendStatus(500);
             } else {
-              res.redirect("/cars/list");
-            }
+res.json({data:results})            }
           }
         );
       }
