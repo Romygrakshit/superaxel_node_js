@@ -26,5 +26,6 @@ router.route("/delete/:id").put(deleteGarages);
 router.route("/list").get(listGarages);
 router.post("/api/create", garageAPI.register_garage);
 router.post("/api/signIn", garageAPI.login_garage);
+router.get('/api/states', garageAPI.getAllStates); 
 
 module.exports = router;

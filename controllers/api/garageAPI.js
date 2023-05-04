@@ -182,6 +182,17 @@ module.exports.login_garage = async (req, res) => {
     );
   } catch (error) {
     console.log(error);
+    res.json({ success: false, message: "Error detected" });
+  }
+};
+
+module.exports.getAllStates = async (req, res) => {
+  try {
+    pool.query("select * from states", (req, results) => {
+      res.json({ success: true, data: results });
+    });
+  } catch (err) {
+    console.log(err);
     res.json({ success: false });
   }
 };
