@@ -135,15 +135,22 @@ const insertData = async (
                   res.sendStatus(500);
                 } else {
                   // Redirect back to the add garage page
-                  console.log("success");
-                  res.status(404).json({
-                    success: true,
-                    data: {
-                      token: jwt.sign({ mobile_number }, "superaxel", {
-                        expiresIn: "10000000000",
-                      }),
-                    },
-                  });
+                  pool.query(
+                    "select * from garages where mobile_number = ?",
+                    [mobile_number],
+                    (req, results) => {
+                      console.log("success");
+                      res.status(404).json({
+                        success: true,
+                        data: {
+                          token: jwt.sign({ mobile_number }, "superaxel", {
+                            expiresIn: "10000000000",
+                          }),
+                          garage: results[0],
+                        },
+                      });
+                    }
+                  );
                 }
               }
             );
@@ -189,10 +196,36 @@ module.exports.login_garage = async (req, res) => {
 
 module.exports.getAllStates = async (req, res) => {
   try {
-    pool.query("select * from states", (req, results) => {
-      res.json({ success: true, data: results });
+    pool.query("select * from states", (req, states) => {
+      pool.query("select * from companies", (req, companies) => {
+        pool.query("select * from cars", (req, cars) => {
+          res.json({
+            success: true,
+            data: { states: states, companies: companies, cars: cars },
+          });
+        });
+      });
     });
   } catch (err) {
+    console.log(err);
+    res.json({ success: false });
+  }
+};
+
+module.exports.verify = async (req, res) => {
+  try {
+    pool.query(
+      "select * from garages where mobile_number = ?",
+      [req.body.number],
+      (req, results) => {
+        if (results[0]) {
+          res.json({ success: true, data: results[0] });
+        } else {
+          res.json({ success: false, message: "no such garage found" });
+        }
+      }
+    );
+  } catch (error) {
     console.log(err);
     res.json({ success: false });
   }

@@ -42,6 +42,7 @@ module.exports.listEnquires = async (req, res) => {
         console.error(err);
         res.status(500).json({ success: false, error: err });
       } else {
+        console.log(results);
         res.status(400).json({ success: true, data: results });
       }
     }
@@ -68,7 +69,7 @@ module.exports.newEnquires = async (req, res, next) => {
         offered_price,
       } = req.body;
 
-      console.log(req.files); 
+      console.log(req.files);
 
       const imageUrls = req.files["enquiryImages"].map((file) => {
         return "/../img/enquires/" + file.filename;
@@ -92,7 +93,9 @@ module.exports.newEnquires = async (req, res, next) => {
           if (err) {
             console.error(err);
           } else {
+            console.log(results);
             const company_id = results[0].id;
+            console.log(company_id);
             pool.query(
               `SELECT * FROM cars WHERE car_name = ? AND company_id = ?`,
               [car_name, company_id],
@@ -100,6 +103,7 @@ module.exports.newEnquires = async (req, res, next) => {
                 console.log(results);
                 if (err) {
                   console.error(err);
+                  res.json({ success: false });
                 } else {
                   const car_id = results[0].id;
                   insertData(
@@ -123,8 +127,8 @@ module.exports.newEnquires = async (req, res, next) => {
       );
     });
   } catch (err) {
-    res.sendStatus(500);
     console.log(err);
+    res.json({ success: false });
   }
 };
 
@@ -183,9 +187,9 @@ const insertData = async (
         (err, results) => {
           if (err) {
             console.error(err);
-            res.sendStatus(500);
+            res.json({ success: false });
           } else {
-            console.log(results)
+            console.log(results);
             console.log("success");
             res.status(404).json({ success: true });
           }
@@ -194,9 +198,6 @@ const insertData = async (
     })
     .catch((err) => {
       console.error(err);
-      res.sendStatus(500);
+      res.json({ success: false });
     });
 };
-
-
-
