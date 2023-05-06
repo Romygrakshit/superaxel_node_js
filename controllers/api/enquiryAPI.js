@@ -42,7 +42,7 @@ module.exports.listEnquires = async (req, res) => {
         console.error(err);
         res.status(500).json({ success: false, error: err });
       } else {
-        console.log(results);
+     
         res.status(400).json({ success: true, data: results });
       }
     }

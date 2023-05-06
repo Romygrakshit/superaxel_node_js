@@ -29,5 +29,7 @@ router.post("/api/signIn", garageAPI.login_garage);
 router.get("/api/states", garageAPI.getAllStates);
 router.post("/api/verify", garageAPI.verify);
 router.post("/api/loginSubAdmin", garageAPI.loginSubAdmin);
+router.post("/api/cars", garageAPI.getCars);
+router.post("/api/price", garageAPI.getPrice);
 
 module.exports = router;

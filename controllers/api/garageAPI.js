@@ -214,17 +214,31 @@ module.exports.getAllStates = async (req, res) => {
 
 module.exports.verify = async (req, res) => {
   try {
-    pool.query(
-      "select * from garages where mobile_number = ?",
-      [req.body.number],
-      (req, results) => {
-        if (results[0]) {
-          res.json({ success: true, data: results[0] });
-        } else {
-          res.json({ success: false, message: "no such garage found" });
+    if (req.body.garage === "false") {
+      pool.query(
+        "select * from subadmins where mobile_number = ?",
+        [req.body.number],
+        (req, results) => {
+          if (results[0]) {
+            res.json({ success: true, garage: false, data: results[0] });
+          } else {
+            res.json({ success: false, message: "no such garage found" });
+          }
         }
-      }
-    );
+      );
+    } else {
+      pool.query(
+        "select * from garages where mobile_number = ?",
+        [req.body.number],
+        (req, results) => {
+          if (results[0]) {
+            res.json({ success: true, garage: true, data: results[0] });
+          } else {
+            res.json({ success: false, message: "no such garage found" });
+          }
+        }
+      );
+    }
   } catch (error) {
     console.log(err);
     res.json({ success: false });
@@ -263,3 +277,43 @@ module.exports.loginSubAdmin = (req, res) => {
     res.json({ success: false, message: "Error detected" });
   }
 };
+
+module.exports.getCars = async (req, res) => {
+  try {
+    const company = req.body.company;
+     pool.query(
+      "select * from companies where company = ?",
+      [company],
+      (req, results) => {
+        const id = results[0].id;
+        console.log(id);
+        pool.query(
+          "select * from cars where company_id = ?",
+          [id],
+          (req, results) => {
+            console.log(results);
+            res.json({ success: true, data: results });
+          }
+        );
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    res.json({ success: false });
+  }
+};
+
+
+module.exports.getPrice = (req, res) => {
+  try {
+    const car = req.body.car; 
+    pool.query('select * from cars where car_name = ?', [car], (req, results) => {
+      pool.query('select * from inventory where car_id = ?', [results[0].id], (req, results) => {
+        res.json({ success: true, data: results }); 
+      })
+    })
+  } catch (error) {
+    console.log(error); 
+    res.json({ success: false }); 
+  }
+}
