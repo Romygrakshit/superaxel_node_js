@@ -230,3 +230,36 @@ module.exports.verify = async (req, res) => {
     res.json({ success: false });
   }
 };
+
+module.exports.loginSubAdmin = (req, res) => {
+  try {
+    const { mobile_number, password } = req.body;
+    pool.query(
+      `select * from subadmins where mobile_number = ?`,
+      [mobile_number],
+      async (req, results) => {
+        if (results) {
+          let realPassword = results[0].password;
+          if (!(await bcrypt.compare(password, realPassword))) {
+            return res.json({ success: false, message: `Incorrect Password` });
+          }
+          res.json({
+            success: true,
+            message: "SubAdmin successfully logged in",
+            data: {
+              token: jwt.sign({ mobile_number }, "superaxel", {
+                expiresIn: "10000000000",
+              }),
+              SubAdmin: results[0],
+            },
+          });
+        } else {
+          res.json({ success: false, message: "SubAdmin does not exist" });
+        }
+      }
+    );
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: "Error detected" });
+  }
+};
