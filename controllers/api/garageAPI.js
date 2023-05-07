@@ -281,7 +281,7 @@ module.exports.loginSubAdmin = (req, res) => {
 module.exports.getCars = async (req, res) => {
   try {
     const company = req.body.company;
-     pool.query(
+    pool.query(
       "select * from companies where company = ?",
       [company],
       (req, results) => {
@@ -303,17 +303,24 @@ module.exports.getCars = async (req, res) => {
   }
 };
 
-
 module.exports.getPrice = (req, res) => {
   try {
-    const car = req.body.car; 
-    pool.query('select * from cars where car_name = ?', [car], (req, results) => {
-      pool.query('select * from inventory where car_id = ?', [results[0].id], (req, results) => {
-        res.json({ success: true, data: results }); 
-      })
-    })
+    const car = req.body.car;
+    pool.query(
+      "select * from cars where car_name = ?",
+      [car],
+      (req, results) => {
+        pool.query(
+          "select * from inventory where car_id = ?",
+          [results[0].id],
+          (req, results) => {
+            res.json({ success: true, data: results });
+          }
+        );
+      }
+    );
   } catch (error) {
-    console.log(error); 
-    res.json({ success: false }); 
+    console.log(error);
+    res.json({ success: false });
   }
-}
+};

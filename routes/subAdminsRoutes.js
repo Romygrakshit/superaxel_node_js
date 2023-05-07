@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const subAdminAPI = require('../controllers/api/subAdminAPI'); 
 
 const {
   registerSubAdmins,
@@ -19,6 +20,7 @@ router.route("/edit").put(editSubAdmins);
 router.route("/edit/page/:id").get(editSubAdminPage);
 router.route("/delete/:id").put(deleteSubAdmins);
 router.route("/list").get(listSubAdmins);
+router.post('/api/createInventory', subAdminAPI.createInventory); 
 // router.route("/upload").post(upload);
 
 module.exports = router;
