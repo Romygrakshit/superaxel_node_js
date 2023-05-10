@@ -23,24 +23,35 @@ module.exports.createInventory = (req, res) => {
     left_axel_inventory,
     right_axel_price,
     right_axel_inventory,
-    } = req.body;
-    console.log(req.body); 
+  } = req.body;
+  console.log(req.body);
 
- try{ pool.query(
-    "select * from cars where car_name = ?",
-    [car_name],
-    (req, results) => {
-      console.log(results);
-      pool.query(
-        `insert into inventory(car_id,left_axel_price,left_axel_inventory,right_axel_price,right_axel_inventory,subadmin_id) values (${results[0].id},${left_axel_price},${left_axel_inventory},${right_axel_price},${right_axel_inventory},${subAdmin_id})`,
+  try {
+    pool.query(
+      "select * from cars where car_name = ?",
+      [car_name],
+      (req, results) => {
+        console.log(results);
+        pool.query(
+          `insert into inventory(car_id,left_axel_price,left_axel_inventory,right_axel_price,right_axel_inventory,subadmin_id) values (${results[0].id},${left_axel_price},${left_axel_inventory},${right_axel_price},${right_axel_inventory},${subAdmin_id})`,
           (req) => {
-          res.json({ success: true });
-        }
-      );
-    }
- );
- } catch (err) {
-     console.log(err); 
-     res.json({ success: false }); 
+            res.json({ success: true });
+          }
+        );
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    res.json({ success: false });
   }
+};
+
+module.exports.getEnquiryByState = (req, res) => {
+  pool.query(
+    "select * from enquires where state = ?",
+    [req.body.state],
+    (req, results) => {
+      res.json({ success: true, data: results });
+    }
+  );
 };

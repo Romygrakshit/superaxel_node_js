@@ -42,7 +42,6 @@ module.exports.listEnquires = async (req, res) => {
         console.error(err);
         res.status(500).json({ success: false, error: err });
       } else {
-     
         res.status(400).json({ success: true, data: results });
       }
     }
@@ -67,6 +66,7 @@ module.exports.newEnquires = async (req, res, next) => {
         car_name,
         axel,
         offered_price,
+        state,
       } = req.body;
 
       console.log(req.files);
@@ -116,6 +116,7 @@ module.exports.newEnquires = async (req, res, next) => {
                     axel,
                     offered_price,
                     status,
+                    state,
                     imageUrls,
                     res
                   );
@@ -142,6 +143,7 @@ const insertData = async (
   axel,
   offered_price,
   status,
+  state,
   imageUrls,
   res
 ) => {
@@ -182,6 +184,7 @@ const insertData = async (
           axel,
           offered_price,
           status,
+          state,
           images_id,
         },
         (err, results) => {

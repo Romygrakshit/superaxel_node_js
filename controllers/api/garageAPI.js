@@ -53,6 +53,7 @@ module.exports.register_garage = async (req, res, next) => {
         lat,
         lng,
         password,
+        
       } = req.body;
 
       const profileUrl =
