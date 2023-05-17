@@ -47,11 +47,31 @@ module.exports.createInventory = (req, res) => {
 };
 
 module.exports.getEnquiryByState = (req, res) => {
-  pool.query(
-    "select * from enquires where state = ?",
-    [req.body.state],
-    (req, results) => {
-      res.json({ success: true, data: results });
-    }
-  );
+  try {
+    pool.query(
+      "select * from enquires where state = ?",
+      [req.body.state],
+      (req, results) => {
+        res.json({ success: true, data: results });
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    res.status(404).json({ msg: "some issue occrured" });
+  }
+};
+
+module.exports.updateEnq = (req, res) => {
+  try {
+    pool.query(
+      "update enquires set offered_price = ?, status = ? where id = ?",
+      [req.body.price, req.body.status, req.body.id],
+      (req, results) => {
+        res.status(200).json({ message: "Enquiry updated successfully" });
+      }
+    );
+  } catch (err) {
+    console.log("error", err);
+    res.status(404).json({ message: "some issues occured" });
+  }
 };
