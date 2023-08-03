@@ -13,14 +13,14 @@
               >
                 <div class="form-group">
                   <h4 class="header-title">Add New Enquiry</h4>
-                  <label class="col-form-label">Garage_id</label>
-                  <input
-                    class="form-control"
-                    type="number"
-                    placeholder="Garage_id"
-                    id="example-text-input"
-                    name="garage_id"
-                  />
+                  <div class="form-group">
+                    <label for="garage_name">Garage Id</label>
+                    <select name="garage_name" id="garage_name" class="form-control">
+                      <% garages.forEach((row) => { %>
+                        <option><%= row.garage_name %></option>
+                      <% }); %>
+                    </select>
+                  </div>
                 </div>
                 <div class="form-group">
                   <label for="example-text-input" class="col-form-label"
@@ -35,7 +35,7 @@
                   />
                 </div>
 
-                <div class="form-group">
+                <!-- <div class="form-group">
                   <label for="Select">Select Company:</label>
                   <select name="company" id="Select" class="form-control">
                     <% company.forEach((row) => { %>
@@ -43,8 +43,8 @@
 
                     <% }); %>
                   </select>
-                </div>
-                <div class="form-group">
+                </div> -->
+                <!-- <div class="form-group">
                   <label for="SelectCar">Select Car:</label>
                   <select name="car_name" id="SelectCar" class="form-control">
                     <% car.forEach((row) => { %>
@@ -52,6 +52,18 @@
 
                     <% }); %>
                   </select>
+                </div> -->
+                <div class="form-group">
+                  <label for="Select">Select Company:</label>
+                  <select name="company_id" id="SelectCompany" class="form-control">
+                    <% company.forEach((row) => { %>
+                      <option value="<%= row.id %>"><%= row.company %></option>
+                      <% }); %>
+                    </select>
+                </div>
+                <div class="form-group">
+                  <label for="Select">Select Car:</label>
+                  <select name="car_id" id="SelectCar" class="form-control"></select>
                 </div>
                 <div class="form-group">
                   <label for="SelectAxel" class="col-form-label"
@@ -93,30 +105,21 @@
                 </div>
                 <div class="form-group">
                   <label for="Select">Select State:</label>
-                  <select name="state" id="Select" class="form-control">
+                  <select name="state" id="SelectState" class="form-control">
                     <% states.forEach((row) => { %>
-                    <option><%= row.state %></option>
-
+                      <option value="<%= row.id %>"><%= row.state %></option>
                     <% }); %>
                   </select>
                 </div>
                 <div class="form-group">
-                  <label for="example-text-input" class="col-form-label"
-                    >City</label
-                  >
-                  <input
-                    class="form-control"
-                    type="text"
-                    placeholder="City"
-                    name="city"
-                    id="example-text-input"
-                  />
+                  <label for="Select">Select City:</label>
+                  <select name="city" id="SelectCity" class="form-control"></select>
                 </div>
+                
 
                 <div class="form-group">
                   <label for="example-text-input" class="col-form-label"
-                    >Offered Price</label
-                  >
+                    >Offered Price</label>
                   <input
                     class="form-control"
                     type="text"
@@ -126,6 +129,7 @@
                   />
                 </div>
                 <button class="btn btn-primary mb-3">Add Enquiry</button>
+              </div>
               </form>
             </div>
           </div>
@@ -136,3 +140,79 @@
     </div>
   </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $("#SelectState").change(function () {
+      // console.log($(this)); // Log the entire select element
+      const selectedStateId = $(this).val();
+      // console.log("Selected State ID:", selectedStateId);
+      $.ajax({
+        url: `/enquires/get-cities/${selectedStateId}`,
+        method: "GET",
+        success: function (response) {
+          const cities = response.cities;
+          $("#SelectCity").empty();
+
+          if (cities.length === 0) {
+            $("#SelectCity").append(
+              $("<option>", {
+                text: "No City Found in Above State",
+                value: "",
+              })
+            );
+          } else {
+            cities.forEach(function (city) {
+              $("#SelectCity").append(
+                $("<option>", {
+                  text: city.city,
+                  value: city.city_id,
+                })
+              );
+            });
+          }
+        },
+        error: function (error) {
+          console.error(error);
+        },
+      });
+    });
+  });
+
+  $(document).ready(function () {
+    $("#SelectCompany").change(function () {
+      // console.log($(this));
+      const selectedCompanyId = $(this).val();
+      // console.log("Selected Company ID:", selectedCompanyId);
+      $.ajax({
+        url: `/enquires/get-cars/${selectedCompanyId}`,
+        method: "GET",
+        success: function (response) {
+          const cars = response.cars;
+          $("#SelectCar").empty();
+
+          if (cars.length === 0) {
+            $("#SelectCar").append(
+              $("<option>", {
+                text: "No Car Found in Above Company",
+                value: "",
+              })
+            );
+          } else {
+            cars.forEach(function (car) {
+              $("#SelectCar").append(
+                $("<option>", {
+                  text: car.car_name,
+                  value: car.id,
+                })
+              );
+            });
+          }
+        },
+        error: function (error) {
+          console.error(error);
+        },
+      });
+    });
+  });
+</script>

@@ -294,7 +294,7 @@
 
 .horizontal-menu ul li:hover > a,
 .horizontal-menu ul li.active > a {
-  color: #007bff;
+  color:#007bff;  
 }
 
 .horizontal-menu nav > ul > li:first-child > a {
@@ -324,6 +324,7 @@
 }
 
 .horizontal-menu ul li:hover > .submenu {
+
   opacity: 1;
   visibility: visible;
 }

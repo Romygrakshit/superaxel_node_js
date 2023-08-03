@@ -7,10 +7,9 @@ const saltRounds = 10;
 // Create MySQL connection pool
 const pool = mysql.createPool({
   connectionLimit: 10,
-  host: "localhost",
+  host: "127.0.0.1",
   user: "root",
-  port: "3308",
-  password: "password",
+  password: "",
   database: "superaxel",
 });
 
@@ -43,12 +42,12 @@ const newEnquires = async (req, res, next) => {
       }
       const status = "pending";
       const {
-        garage_id,
+        garage_name,
         address,
         lat,
         lng,
-        company,
-        car_name,
+        company_id,
+        car_id,
         axel,
         offered_price,
       } = req.body;
@@ -68,37 +67,32 @@ const newEnquires = async (req, res, next) => {
           }
         );
       });
+
       pool.query(
-        `SELECT * FROM companies WHERE company = ?`,
-        [company],
+        `SELECT * FROM garages WHERE garage_name = ?`,
+        [garage_name],
         (err, results) => {
           if (err) {
             console.error(err);
           } else {
-            const company_id = results[0].id;
-            pool.query(
-              `SELECT * FROM cars WHERE car_name = ? AND company_id = ?`,
-              [car_name, company_id],
-              (err, results) => {
-                if (err) {
-                  console.error(err);
-                } else {
-                  const car_id = results[0].id;
-                  insertData(
-                    garage_id,
-                    address,
-                    lat,
-                    lng,
-                    company_id,
-                    car_id,
-                    axel,
-                    offered_price,
-                    status,
-                    imageUrls,
-                    res
-                  );
-                }
-              }
+            if (results.length === 0) {
+              console.error("No garage found with the specified.");
+              res.sendStatus(500);
+              return;
+            }
+            const garage_id = results[0].id;
+            insertData(
+              garage_id,
+              address,
+              lat,
+              lng,
+              company_id,
+              car_id,
+              axel,
+              offered_price,
+              status,
+              imageUrls,
+              res
             );
           }
         }
@@ -169,7 +163,7 @@ const insertData = async (
             res.sendStatus(500);
           } else {
             // Redirect back to the add club page
-            res.redirect("/enquires/add");
+            res.redirect("/enquires/list");
           }
         }
       );
@@ -308,34 +302,52 @@ const editEnquiryPage = async (req, res) => {
 };
 
 const addEnquiryPage = async (req, res) => {
-  pool.query(`SELECT * FROM companies`, (err, results) => {
-    if (err) {
-      console.error(err);
-      res.sendStatus(500);
-    } else {
-      const company = results;
-      pool.query(`SELECT * FROM cars`, (err, results) => {
-        if (err) {
-          console.error(err);
-          res.sendStatus(500);
-        } else {
-          const car = results;
-          // Render the editSubAdminPage.ejs with SubAdmin data
-          pool.query(`SELECT * FROM states`, (err, results) => {
-            if (err) {
-              console.error(err);
-              res.sendStatus(500);
-            } else {
-              const states = results;
-              // Render the editSubAdminPage.ejs with SubAdmin data
-
-              res.render("addEnquiryPage.ejs", { company, car, states });
-            }
-          });
-        }
-      });
-    }
-  });
+  try {
+    pool.query(`SELECT * FROM garages`, (err, results) => {
+      if (err) {
+        console.error(err);
+        res.sendStatus(500);
+      } else {
+        const garages = results;
+        pool.query(`SELECT * FROM companies`, (err, results) => {
+          if (err) {
+            console.error(err);
+            res.sendStatus(500);
+          } else {
+            const company = results;
+            pool.query(`SELECT * FROM cars`, (err, results) => {
+              if (err) {
+                console.error(err);
+                res.sendStatus(500);
+              } else {
+                const car = results;
+                // Render the editSubAdminPage.ejs with SubAdmin data
+                pool.query(`SELECT * FROM states`, (err, results) => {
+                  if (err) {
+                    console.error(err);
+                    res.sendStatus(500);
+                  } else {
+                    const states = results;
+                    // Render the editSubAdminPage.ejs with SubAdmin data
+                    res.render("addEnquiryPage.ejs", {
+                      garages,
+                      company,
+                      car,
+                      states,
+                    });
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
+    });
+  } catch (err) {
+    // handle error
+    res.sendStatus(500);
+    console.log("error paji");
+  }
 };
 
 const updateEnquiry = async (req, res, next) => {
@@ -357,10 +369,44 @@ const updateEnquiry = async (req, res, next) => {
   );
 };
 
+const getCitiesByStateId = (req, res) => {
+  const stateId = req.params.stateId;
+  pool.query(
+    "SELECT * FROM cities WHERE state_id = ?",
+    [stateId],
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        res.sendStatus(500);
+      } else {
+        res.json({ cities: results });
+      }
+    }
+  );
+};
+
+const getCarsByCompanyId = (req, res) => {
+  const companyId = req.params.companyId;
+  pool.query(
+    "SELECT * FROM cars WHERE company_id = ?",
+    [companyId],
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        res.sendStatus(500);
+      } else {
+        res.json({ cars: results });
+      }
+    }
+  );
+};
+
 module.exports = {
   newEnquires,
   listEnquires,
   editEnquiryPage,
   addEnquiryPage,
   updateEnquiry,
+  getCitiesByStateId,
+  getCarsByCompanyId,
 };

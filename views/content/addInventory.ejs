@@ -1,0 +1,92 @@
+<div class="main-content-inner">
+  <div class="row">
+    <div class="col-lg-6 col-ml-12">
+      <div class="row chan">
+        <!-- Textual inputs start -->
+        <div class="col-12 mt-5">
+          <div class="card">
+            <div class="card-body">
+              <form
+                action="/inventory/register"
+                method="post"         
+              >
+                <div class="form-group">
+                  <h4 class="header-title">Add New Inventory</h4>
+                  <div class="form-group">
+                    <label for="SelectCar">Select Car:</label>
+                    <select name="car_name" id="SelectCar" class="form-control">
+                      <% car.forEach((row) => { %>
+                      <option><%= row.car_name %></option>
+                      <% }); %>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="example-text-input" class="col-form-label">
+                      Left Axel Price
+                    </label>
+                    <input
+                      class="form-control"
+                      type="number"
+                      placeholder="left_axel_price"
+                      name="left_axel_price"
+                      id="example-text-input"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="example-text-input" class="col-form-label">
+                      Left Axel Inventory
+                    </label>
+                    <input
+                      class="form-control"
+                      type="number"
+                      placeholder="left_axel_inventory"
+                      name="left_axel_inventory"
+                      id="example-text-input"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="example-text-input" class="col-form-label">
+                      Right Axel Price
+                    </label>
+                    <input
+                      class="form-control"
+                      type="number"
+                      placeholder="right_axel_price"
+                      name="right_axel_price"
+                      id="example-text-input"
+                    />
+                  </div>
+                
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label">
+                    Right Axel Inventory
+                  </label>
+                  <input
+                    class="form-control"
+                    type="number"
+                    placeholder="right_axel_inventory"
+                    name="right_axel_inventory"
+                    id="example-text-input"
+                  />
+                </div>
+              
+                <div class="form-group">
+                    <label for="SelectCar">Select Subadmin:</label>
+                    <select name="subadmin_name" id="SelectSubadmin" class="form-control">
+                      <% subadmins.forEach((row) => { %>
+                      <option><%= row.name %></option>
+                      <% }); %>
+                    </select>
+                </div>
+                <button class="btn btn-primary mb-3">Add Inventory</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- Textual inputs end -->
+        <!-- main content area end -->
+      </div>
+    </div>
+  </div>
+</div>

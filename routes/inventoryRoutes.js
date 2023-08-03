@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  addInventory,
+  newInventory,
   addInventoryPage,
   editInventory,
   deleteInventory,
@@ -11,7 +11,7 @@ const {
   changeInventory,
 } = require("../controllers/inventoryAPI");
 
-router.route("/register").post(addInventory);
+router.route("/register").post(newInventory);
 router.route("/add").get(addInventoryPage);
 router.route("/edit").put(editInventory);
 router.route("/change").put(changeInventory);
