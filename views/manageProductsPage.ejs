@@ -1,0 +1,59 @@
+<body class="body-bg">
+  <!--[if lt IE 8]>
+    <p class="browserupgrade">
+      You are using an <strong>outdated</strong> browser. Please
+      <a href="http://browsehappy.com/">upgrade your browser</a> to improve your
+      experience.
+    </p>
+  <![endif]-->
+  <!-- preloader area start -->
+  <div id="preloader">
+    <div class="loader"></div>
+  </div>
+  <!-- preloader area end -->
+  <!-- main wrapper start -->
+  <div class="horizontal-main-wrapper">
+    <!-- main header area start -->
+
+    <%- include('./partials/header.ejs') %>
+    <!-- main header area end -->
+    <!-- header area start -->
+    <%- include('./partials/headerNav.ejs') %>
+    <!-- header area end -->
+    <!-- page title area end -->
+    <%- include('./content/manageProducts.ejs') %>
+
+    <!-- main content area end -->
+    <!-- footer area start-->
+    <%- include('./partials/footer.ejs') %>
+    <!-- footer area end-->
+  </div>
+  <!-- main wrapper start -->
+  <%- include('./partials/jquery.ejs') %>
+</body>
+<% if (added) { %>
+  <!-- If the 'added' query parameter is present, show the popup message -->
+  <script>
+    window.onload = function() {
+      // Create the popup element
+      const popup = document.createElement("div");
+      popup.innerText = "Product Added Successfully";
+      popup.style.position = "fixed";
+      popup.style.top = "50%";
+      popup.style.left = "50%";
+      popup.style.transform = "translate(-50%, -50%)";
+      popup.style.backgroundColor = "white";
+      popup.style.padding = "10px";
+      popup.style.borderRadius = "5px";
+      popup.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.2)";
+
+      // Append the popup element to the body
+      document.body.appendChild(popup);
+
+      // After a time interval (e.g., 3 seconds), remove the popup
+      setTimeout(function() {
+        popup.style.display = "none";
+      }, 3000); // 3000 milliseconds = 3 seconds
+    };
+  </script>
+<% } %>

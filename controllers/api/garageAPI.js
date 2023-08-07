@@ -8,10 +8,9 @@ const jwt = require("jsonwebtoken");
 // Create MySQL connection pool
 const pool = mysql.createPool({
   connectionLimit: 10,
-  host: "localhost",
+  host: "127.0.0.1",
   user: "root",
-  port: "3308",
-  password: "password",
+  password: "",
   database: "superaxel",
 });
 
@@ -324,4 +323,21 @@ module.exports.getPrice = (req, res) => {
     console.log(error);
     res.json({ success: false });
   }
+};
+
+module.exports.getCitiesByStateId = (req, res) => {
+  const stateId = req.params.stateId;
+  console.log("gA"+stateId);
+  pool.query(
+    "SELECT * FROM cities WHERE state_id = ?",
+    [stateId],
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        res.sendStatus(500);
+      } else {
+        res.json({ cities: results });
+      }
+    }
+  );
 };

@@ -22,6 +22,7 @@ const pool = mysql.createPool({
   database: "superaxel",
 });
 
+
 // Set Templating Engine
 app.use(expressLayouts);
 app.set("layout", "./layouts/main");
@@ -42,14 +43,59 @@ const sub_admins = require("./routes/subAdminsRoutes");
 const garages_routes = require("./routes/garagesRoutes");
 const enquires_routes = require("./routes/enquiresRoutes");
 const inventory_routes = require("./routes/inventoryRoutes");
+const categories_routes = require("./routes/categoriesRoutes");
+const products_routes = require("./routes/productsRoutes")
 
 // middleware for routes
 app.use("/companies", companies_routes);
 app.use("/cars", cars_routes);
 app.use("/subadmins", sub_admins);
+app.use("/products",products_routes);
+app.use("/categories", categories_routes);
 app.use("/garages", garages_routes);
 app.use("/enquires", enquires_routes);
 app.use("/inventory", inventory_routes);
+
+// Route to show the login page
+app.get("/login", (req, res) => {
+  const logout = req.query.logout === 'true';
+  res.render("login",{logout});
+});
+
+// Route to handle login form submission
+app.post("/login", (req, res) => {
+  // Check the provided credentials in the database
+  const { username, password } = req.body;
+
+  // Query the database to find the user with the given username and password
+  const sql = "SELECT * FROM user WHERE username = ? AND password = ?";
+  pool.query(sql, [username, password], (err, results) => {
+    if (err) {
+      console.log(err);
+      // Handle any database errors here
+      res.redirect("/login?error=1");
+      // res.redirect("/cars/list"); // for testing
+    } else {
+      // Check if any rows were returned from the database query
+      console.log(results);
+      if (results.length === 1) {
+        // Login successful, redirect to a protected page or dashboard
+        res.redirect("/cars/list");
+      } else {
+        // Login failed, redirect back to the login page with an error message
+        res.redirect("/login?error=1");
+        // res.redirect("/cars/list"); // for testing
+      }
+    }
+  });
+});
+
+// Route to handle logout
+app.get("/logout", (req, res) => {
+  // Redirect to the login page with a query parameter indicating successful logout
+  res.redirect("/login?logout=1");
+});
+
 
 // app.post("/days", (req, res) => {
 //   const { name } = req.body;

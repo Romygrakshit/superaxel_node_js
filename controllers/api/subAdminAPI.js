@@ -8,10 +8,9 @@ const jwt = require("jsonwebtoken");
 // Create MySQL connection pool
 const pool = mysql.createPool({
   connectionLimit: 10,
-  host: "localhost",
+  host: "127.0.0.1",
   user: "root",
-  port: "3308",
-  password: "password",
+  password: "",
   database: "superaxel",
 });
 

@@ -7,10 +7,9 @@ const saltRounds = 10;
 // Create MySQL connection pool
 const pool = mysql.createPool({
   connectionLimit: 10,
-  host: "localhost",
+  host: "127.0.0.1",
   user: "root",
-  port: "3308",
-  password: "password",
+  password: "",
   database: "superaxel",
 });
 
@@ -133,7 +132,7 @@ const insertData = async (
                   res.sendStatus(500);
                 } else {
                   // Redirect back to the add garage page
-                  res.redirect("/garages/add");
+                  res.redirect("/garages/list?added=1");
                 }
               }
             );
@@ -188,7 +187,8 @@ const listGarages = async (req, res) => {
       res.sendStatus(500);
     } else {
       // Render the manageGarages.hbs template with the user data
-      res.render("manageGaragePage", { garages: results });
+      const added = req.query.added === '1'; // Check if the 'added' query parameter is '1'
+      res.render("manageGaragePage", { garages: results, added });
     }
   });
 };
@@ -287,19 +287,47 @@ const deleteImage = (req, res, next) => {
 // uploadPath = path.join(__dirname, "../public/img/garage/gallery");
 // Garages List
 const addGaragePage = async (req, res) => {
+  try{
   pool.query(`SELECT * FROM states`, (err, results) => {
     if (err) {
       console.error(err);
       res.sendStatus(500);
     } else {
       const states = results;
-
-      // Render the editSubAdminPage.ejs with SubAdmin data
-
-      res.render("addGaragePage.ejs", { states });
+      pool.query('SELECT * FROM cities', (err,results)=>{
+        if(err){
+          console.error(err);
+          res.sendStatus(500);
+        }else{
+          const cities = results;
+          res.render("addGaragePage.ejs", { states , cities});
+        }
+     });      
     }
   });
+}catch (err) {
+  // handle error
+  res.sendStatus(500);
+  console.log("error paji");
+}
 };
+
+const getCitiesByStateId = (req, res) => {
+  const stateId = req.params.stateId;
+  pool.query(
+    "SELECT * FROM cities WHERE state_id = ?",
+    [stateId],
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        res.sendStatus(500);
+      } else {
+        res.json({ cities: results });
+      }
+    }
+  );
+};
+
 
 const updateGaragePassword = async (req, res, next) => {
   const { password, id } = req.body;
@@ -328,4 +356,5 @@ module.exports = {
   updateProfileImage,
   deleteImage,
   updateGaragePassword,
+  getCitiesByStateId,
 };

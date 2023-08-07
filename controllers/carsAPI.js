@@ -2,10 +2,9 @@ const mysql = require("mysql");
 // Create MySQL connection pool
 const pool = mysql.createPool({
   connectionLimit: 10,
-  host: "localhost",
+  host: "127.0.0.1",
   user: "root",
-  port: "3308",
-  password: "password",
+  password: "",
   database: "superaxel",
 });
 // create category in database
@@ -13,10 +12,6 @@ const createCars = async (req, res) => {
   const {
     car_name,
     company,
-    left_axel_price,
-    right_axel_price,
-    left_inventory,
-    right_inventory,
   } = req.body;
   pool.query(
     "SELECT * FROM companies WHERE company = ?",
@@ -33,17 +28,17 @@ const createCars = async (req, res) => {
           {
             car_name,
             company_id,
-            left_axel_price,
-            right_axel_price,
-            left_inventory,
-            right_inventory,
+            // left_axel_price,
+            // right_axel_price,
+            // left_inventory,
+            // right_inventory,
           },
           (err, results) => {
             if (err) {
               console.error(err);
               res.sendStatus(500);
             } else {
-              res.redirect("/cars/list");
+              res.redirect("/cars/list?added=1");
             }
           }
         );
@@ -91,7 +86,8 @@ const editCars = async (req, res) => {
               console.error(err);
               res.sendStatus(500);
             } else {
-res.json({data:results})            }
+              res.json({ data: results })
+            }
           }
         );
       }
@@ -122,7 +118,8 @@ const listCars = async (req, res) => {
       } else {
         // Render the manageusers.hbs template with the user data
         console.log(results);
-        res.render("manageCarsPage", { cars: results });
+        const added = req.query.added === '1'; // Check if the 'added' query parameter is '1'
+        res.render("manageCarsPage", { cars: results, added });
       }
     }
   );

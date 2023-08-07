@@ -5,10 +5,9 @@ const { check, validationResult } = require("express-validator");
 // Create MySQL connection pool
 const pool = mysql.createPool({
   connectionLimit: 10,
-  host: "localhost",
+  host: "127.0.0.1",
   user: "root",
-  port: "3308",
-  password: "password",
+  password: "",
   database: "superaxel",
 });
 
@@ -57,7 +56,7 @@ const registerSubAdmins = async (req, res) => {
           } else {
             // Redirect back to the manage garage list
 
-            res.redirect("/subadmins/list");
+            res.redirect("/subadmins/list?added=1");
           }
         }
       );
@@ -151,7 +150,8 @@ const listSubAdmins = async (req, res) => {
       res.sendStatus(500);
     } else {
       // Render the manageSubAdminPage.ejs with SubAdmins data
-      res.render("manageSubAdminPage", { subadmins: results });
+      const added = req.query.added === '1';
+      res.render("manageSubAdminPage", { subadmins: results , added});
     }
   });
 };

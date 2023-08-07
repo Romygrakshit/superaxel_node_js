@@ -31,3 +31,29 @@
   <!-- main wrapper start -->
   <%- include('./partials/jquery.ejs') %>
 </body>
+<% if (added) { %>
+  <!-- If the 'added' query parameter is present, show the popup message -->
+  <script>
+    window.onload = function() {
+      // Create the popup element
+      const popup = document.createElement("div");
+      popup.innerText = "Garage Added Successfully";
+      popup.style.position = "fixed";
+      popup.style.top = "50%";
+      popup.style.left = "50%";
+      popup.style.transform = "translate(-50%, -50%)";
+      popup.style.backgroundColor = "white";
+      popup.style.padding = "10px";
+      popup.style.borderRadius = "5px";
+      popup.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.2)";
+
+      // Append the popup element to the body
+      document.body.appendChild(popup);
+
+      // After a time interval (e.g., 3 seconds), remove the popup
+      setTimeout(function() {
+        popup.style.display = "none";
+      }, 3000); // 3000 milliseconds = 3 seconds
+    };
+  </script>
+<% } %>
