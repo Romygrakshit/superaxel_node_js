@@ -117,7 +117,7 @@ const listCars = async (req, res) => {
         res.sendStatus(500);
       } else {
         // Render the manageusers.hbs template with the user data
-        console.log(results);
+        // console.log(results);
         const added = req.query.added === '1'; // Check if the 'added' query parameter is '1'
         res.render("manageCarsPage", { cars: results, added });
       }

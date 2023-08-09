@@ -68,7 +68,7 @@ module.exports.newEnquires = async (req, res, next) => {
         state,
       } = req.body;
 
-      console.log(req.files);
+      // console.log(req.files);
 
       const imageUrls = req.files["enquiryImages"].map((file) => {
         return "/../img/enquires/" + file.filename;
@@ -92,14 +92,14 @@ module.exports.newEnquires = async (req, res, next) => {
           if (err) {
             console.error(err);
           } else {
-            console.log(results);
+            // console.log(results);
             const company_id = results[0].id;
-            console.log(company_id);
+            // console.log(company_id);
             pool.query(
               `SELECT * FROM cars WHERE car_name = ? AND company_id = ?`,
               [car_name, company_id],
               (err, results) => {
-                console.log(results);
+                // console.log(results);
                 if (err) {
                   console.error(err);
                   res.json({ success: false });
@@ -191,8 +191,8 @@ const insertData = async (
             console.error(err);
             res.json({ success: false });
           } else {
-            console.log(results);
-            console.log("success");
+            // console.log(results);
+            // console.log("success");
             res.status(404).json({ success: true });
           }
         }

@@ -139,7 +139,7 @@ const insertData = async (
                     "select * from garages where mobile_number = ?",
                     [mobile_number],
                     (req, results) => {
-                      console.log("success");
+                      // console.log("success");
                       res.status(404).json({
                         success: true,
                         data: {
@@ -286,12 +286,12 @@ module.exports.getCars = async (req, res) => {
       [company],
       (req, results) => {
         const id = results[0].id;
-        console.log(id);
+        // console.log(id);
         pool.query(
           "select * from cars where company_id = ?",
           [id],
           (req, results) => {
-            console.log(results);
+            // console.log(results);
             res.json({ success: true, data: results });
           }
         );
@@ -327,7 +327,7 @@ module.exports.getPrice = (req, res) => {
 
 module.exports.getCitiesByStateId = (req, res) => {
   const stateId = req.params.stateId;
-  console.log("gA"+stateId);
+  // console.log("gA"+stateId);
   pool.query(
     "SELECT * FROM cities WHERE state_id = ?",
     [stateId],

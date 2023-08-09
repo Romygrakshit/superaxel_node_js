@@ -63,18 +63,23 @@ const registerGarages = async (req, res, next) => {
             console.error(err);
             res.sendStatus(500);
           } else {
-            insertData(
-              garage_name,
-              state,
-              city,
-              address,
-              profileUrl,
-              mobile_number,
-              lat,
-              lng,
-              password,
-              res
-            );
+            pool.query("SELECT * FROM states WHERE states.id = ?",[state],
+            (err,results)=>{
+              const state_name = results[0].state;
+              insertData(
+                garage_name,
+                state_name,
+                city,
+                address,
+                profileUrl,
+                mobile_number,
+                lat,
+                lng,
+                password,
+                res
+              );
+            }
+            )
           }
         }
       );
@@ -88,7 +93,7 @@ const registerGarages = async (req, res, next) => {
 
 const insertData = async (
   garage_name,
-  state,
+  state_name,
   city,
   address,
   profileUrl,
@@ -117,7 +122,7 @@ const insertData = async (
               "INSERT INTO garages SET ?",
               {
                 garage_name,
-                state,
+                state:state_name,
                 city,
                 address,
                 profile_image_id,
@@ -152,9 +157,9 @@ const editGaragesData = async (req, res) => {
       console.error(err);
       res.sendStatus(500);
     } else {
-      console.log(results);
+      // console.log(results);
       const state_name = results[0].state;
-      console.log(state_name);
+      // console.log(state_name);
       pool.query(
         "UPDATE garages SET garage_name = ?, address = ?, state =?, city = ?, mobile_number = ?, lat = ?, lng =? WHERE id = ?",
         [garage_name, address, state_name, city, mobile_number, lat, lng, id],
@@ -274,8 +279,8 @@ const deleteImage = (req, res, next) => {
   const deleteBannerUrl = 0;
 
   try {
-    console.log("id:", id);
-    console.log("url:", url);
+    // console.log("id:", id);
+    // console.log("url:", url);
     pool.query(
       "UPDATE images SET url = ? WHERE id = ?",
       [url, id],
@@ -340,7 +345,7 @@ const getCitiesByStateId = (req, res) => {
 
 
 const updateGaragePassword = async (req, res, next) => {
-  console.log(req.body);
+  // console.log(req.body);
   const { password, id } = req.body;
 
   bcrypt.hash(password, saltRounds, (err, hash) => {

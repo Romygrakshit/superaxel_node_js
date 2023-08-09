@@ -10,7 +10,7 @@ const pool = mysql.createPool({
 // create category in database
 const createProduct = async (req, res) => {
   try {
-    console.log(req.body)
+    // console.log(req.body)
     const {
       category_name, company_id, car_id, price
     } = req.body;
@@ -66,7 +66,7 @@ const insertProduct = async(category_name,
       console.error(err);
       res.sendStatus(500);
     } else {
-      console.log(results);
+      // console.log(results);
       res.redirect("/products/list?added=1");
     }
   }
@@ -136,7 +136,7 @@ const listProduct = async (req, res) => {
 
 const listProductInventory = async (req, res) => {
   const query = `
-  SELECT pi.id, c.company, car.car_name, sa.name, pi.inventory
+  SELECT pi.id, c.company, car.car_name, sa.name, pi.inventory, pi.date
   FROM products_inventory pi
   LEFT JOIN companies c ON pi.company_id = c.id
   LEFT JOIN cars car ON pi.car_id = car.id
@@ -292,7 +292,7 @@ const addProductInventory = async (req, res) => {
         console.error(err);
         res.sendStatus(500);
       } else {
-        console.log(results);
+        // console.log(results);
         res.redirect("/products/inventory/list?added=1");
       }
     }
