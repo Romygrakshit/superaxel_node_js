@@ -174,11 +174,11 @@ const insertData = async (
     });
 };
 
-// Clubs List
 const listEnquires = async (req, res) => {
   // Fetch data from the "Clubs" table
+  const query = "SELECT e.id, c.company, car.car_name, e.garage_id, e.address, e.lat, e.lng, e.axel, e.offered_price, e.images_id, e.status FROM enquires e LEFT JOIN companies c ON e.company_id = c.id LEFT JOIN cars car ON e.car_id = car.id "
   pool.query(
-    "SELECT * FROM enquires LEFT JOIN delivery_boy ON enquires.delivery_boy = delivery_boy.id LEFT JOIN companies ON enquires.company_id = companies.id LEFT JOIN cars ON enquires.car_id = cars.id",
+    query,
     (err, results) => {
       if (err) {
         console.error(err);
@@ -191,111 +191,44 @@ const listEnquires = async (req, res) => {
   );
 };
 
-// Edit User Page
 const editEnquiryPage = async (req, res) => {
   const id = req.params.id;
-  const enquiryId = {
-    id: id,
-  };
-  // Fetch data from the "users" table of particular user
+  
   pool.query(
-    `SELECT * FROM enquires LEFT JOIN delivery_boy ON enquires.delivery_boy = delivery_boy.id WHERE enquires.id = ${id}`,
+    `SELECT e.id, c.company, car.car_name, g.garage_name, e.address, e.lat, e.lng, e.axel, e.offered_price, e.images_id, images.url
+    FROM enquires e
+    LEFT JOIN companies c ON e.company_id = c.id
+    LEFT JOIN cars car ON e.car_id = car.id
+    LEFT JOIN garages g ON e.garage_id = g.id
+    LEFT JOIN images ON e.images_id = images.id
+    WHERE e.id =${id}`,
     (err, results) => {
       if (err) {
         console.error(err);
         res.sendStatus(500);
       } else {
-        // Render the editUserPage.ejs with User data
-        console.log(id);
-        console.log(results);
-
-        const enquiry = results[0];
-        const company_id = results[0].company_id;
-        const car_id = results[0].car_id;
-        const images_id = results[0].images_id;
-        const separator = "-";
-        let imagesIdResults;
-        let imagesUrl = [];
-
-        if (images_id.includes(separator)) {
-          imagesIdResults = images_id.split(separator);
-        } else {
-          imagesIdResults = [images_id];
-        }
-
-        // Use Promise.all() to wait for all database queries to complete
-        Promise.all(
-          imagesIdResults.map((imagesIdResult) => {
-            return new Promise((resolve, reject) => {
-              pool.query(
-                `SELECT * FROM images WHERE id = ?`,
-                [imagesIdResult],
-                (err, results) => {
-                  if (err) {
-                    console.error(err);
-                    reject(err);
-                  } else {
-                    imagesUrl.push(results[0]);
-                    resolve();
-                  }
-                }
-              );
-            });
-          })
-        )
-
-          .then(() => {
-            console.log(imagesUrl);
-            pool.query(
-              `SELECT * FROM companies WHERE id = ${company_id}`,
-              (err, results) => {
-                if (err) {
-                  console.error(err);
-                  res.sendStatus(500);
-                } else {
-                  const company = results[0];
-                  pool.query(
-                    `SELECT * FROM cars WHERE id =${car_id}`,
-                    (err, results) => {
-                      if (err) {
-                        console.error(err);
-                        res.sendStatus(500);
-                      } else {
-                        const car = results[0];
-                        pool.query(
-                          `SELECT * FROM delivery_boy`,
-                          (err, results) => {
-                            if (err) {
-                              console.error(err);
-                              res.sendStatus(500);
-                            } else {
-                              const boy = results;
-                              console.log(enquiryId);
-                              // Render the editSubAdminPage.ejs with SubAdmin data
-                              console.log(enquiry);
-                              res.render("editEnquiryPage.ejs", {
-                                enquiry,
-                                imagesUrl,
-                                car,
-                                boy,
-                                company,
-                                enquiryId,
-                              });
-                              //  res.json(enquiry, imagesUrl, car, boy, company);
-                            }
-                          }
-                        );
-                      }
-                    }
-                  );
-                }
-              }
-            );
-          })
-          .catch((err) => {
+        const enquiry = results;
+        pool.query('SELECT * FROM companies',
+        (err,results)=>{
+          if(err){
             console.error(err);
-            res.status(500).send("Error fetching gallery images");
-          });
+            res.sendStatus(500);
+          }else{
+            const company = results;
+            pool.query('SELECT * FROM states',(err,results)=>{
+              if(err){
+                console.error(err);
+                res.sendStatus(500);
+              }else{
+                const states=results;
+                res.render("editEnquiryPage.ejs", { results:enquiry, company, states});
+              }
+            })
+            
+          }
+        }
+        )
+        // Render the manageusers.hbs template with the user data
       }
     }
   );
@@ -351,18 +284,19 @@ const addEnquiryPage = async (req, res) => {
 };
 
 const updateEnquiry = async (req, res, next) => {
-  const { status, offered_price, delivery_boy, id } = req.body;
+  const { garage_name, address, state, company_id, car_id,  axel,lat,lng,offered_price, id } = req.body;
+  // console.log(req.body)
 
   // Render the editSubAdminPage.ejs with SubAdmin data
   pool.query(
-    "UPDATE enquires SET status = ?, offered_price =?, delivery_boy =? WHERE id = ?",
-    [status, offered_price, delivery_boy, id],
+    "UPDATE enquires SET address = ?, state = ?, company_id = ?, car_id = ?, axel=?, lat=?, lng=?, offered_price = ? WHERE id = ?",
+    [ address, state, company_id, car_id,  axel,lat,lng,offered_price, id],
     (err, results) => {
       if (err) {
         console.error(err);
         res.sendStatus(500);
       } else {
-        console.log("result of enquiry", results);
+        // console.log("result of enquiry", results);
         res.redirect("/enquires/list");
       }
     }
@@ -401,6 +335,88 @@ const getCarsByCompanyId = (req, res) => {
   );
 };
 
+const deleteEnquiry = async (req, res) => {
+  const userid = req.params.id;
+  pool.query(
+    `DELETE FROM enquires WHERE id = ${userid}`,
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        res.sendStatus(500);
+      } else {
+        res.redirect("/enquires/list");
+      }
+    }
+  );
+};
+
+const updateEnquiryImage = async (req, res) => {
+  try {
+    upload.single("enquiryImage")(req, res, (err) => {
+      if (err) {
+        console.error(err);
+        res.sendStatus(500);
+        return;
+      }
+      const { url, enquiryId } = req.body;
+      const imageUrl = "/img/enquires/" + req.file.filename;
+      const oldImageUrl = url;
+
+      // Update the image URL in the images table
+      pool.query(
+        "UPDATE images SET url = ? WHERE url = ?",
+        [imageUrl, oldImageUrl],
+        (err, results) => {
+          if (err) {
+            console.error(err);
+            res.sendStatus(500);
+          } else {
+            // Update the images_id field in the enquires table
+            pool.query(
+              "UPDATE enquires SET images_id = REPLACE(images_id, ?, ?) WHERE images_id LIKE ?",
+              [oldImageUrl, imageUrl, `%${oldImageUrl}%`],
+              (err, results) => {
+                if (err) {
+                  console.error(err);
+                  res.sendStatus(500);
+                } else {
+                  res.redirect("/enquires/list");
+                }
+              }
+            );
+          }
+        }
+      );
+    });
+  } catch (err) {
+    res.sendStatus(500);
+    console.log("error paji", err);
+  }
+};
+// Delete Image for Enquiry
+const deleteEnquiryImage = (req, res, next) => {
+  const { url, id } = req.body;
+
+  try {
+    pool.query(
+      "UPDATE images SET url = ? WHERE id = ?",
+      [url, id],
+      (err, results) => {
+        if (err) {
+          console.error(err);
+          res.sendStatus(500);
+        } else {
+          res.redirect("/enquires/list");
+        }
+      }
+    );
+  } catch (err) {
+    res.sendStatus(500);
+    console.log("error paji");
+  }
+};
+
+
 module.exports = {
   newEnquires,
   listEnquires,
@@ -409,4 +425,7 @@ module.exports = {
   updateEnquiry,
   getCitiesByStateId,
   getCarsByCompanyId,
+  deleteEnquiry,
+  updateEnquiryImage,
+  deleteEnquiryImage,
 };

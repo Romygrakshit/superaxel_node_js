@@ -49,19 +49,19 @@
                       type="button"
                       class="btn btn-danger mt-3"
                       data-toggle="modal"
-                      data-target="#exampleModalLong-<%= row.car_id %>"
+                      data-target="#exampleModalLong-<%= row.id %>"
                     >
-                      Delete Car
+                      Delete Product
                     </button>
 
                     <div
                       class="modal fade"
-                      id="exampleModalLong-<%= row.car_id %>"
+                      id="exampleModalLong-<%= row.id %>"
                     >
                       <div class="modal-dialog">
                         <div class="modal-content">
                           <div class="modal-header">
-                            <h5 class="modal-title">Delete Car</h5>
+                            <h5 class="modal-title">Delete Product</h5>
                             <button
                               type="button"
                               class="close"
@@ -75,7 +75,7 @@
                             method="post"
                           >
                             <div class="modal-body">
-                              <h6>Do you want to delete the Car?</h6>
+                              <h6>Do you want to delete the Product?</h6>
                             </div>
                             <div class="modal-footer">
                               <button

@@ -23,7 +23,7 @@ const validateInputs = [
 ];
 // Register SubAdmin
 const registerSubAdmins = async (req, res) => {
-  const { name, mobile_number, state, password } = req.body;
+  const { name, mobile_number, state_id, city, password } = req.body;
 
   // Define validation rules
 
@@ -40,26 +40,38 @@ const registerSubAdmins = async (req, res) => {
       res.sendStatus(500);
     } else {
       // Add garage to database
-
       pool.query(
-        "INSERT INTO subadmins SET ?",
-        {
-          name,
-          mobile_number,
-          state,
-          password: hash,
-        },
-        (err, results) => {
+        'SELECT * FROM states WHERE states.id = ?',[state_id],
+        (err,results)=>{
           if (err) {
             console.error(err);
             res.sendStatus(500);
           } else {
-            // Redirect back to the manage garage list
-
-            res.redirect("/subadmins/list?added=1");
+          const state = results[0].state;
+          pool.query(
+            "INSERT INTO subadmins SET ?",
+            {
+              name,
+              mobile_number,
+              state,
+              city,
+              password: hash,
+            },
+            (err, results) => {
+              if (err) {
+                console.error(err);
+                res.sendStatus(500);
+              } else {
+                // Redirect back to the manage garage list
+    
+                res.redirect("/subadmins/list?added=1");
+              }
+            }
+          );
           }
         }
-      );
+      )
+      
     }
   });
 };
@@ -76,26 +88,80 @@ const addSubAdminsPage = async (req, res) => {
       res.render("addSubAdminPage", { states });
     }
   });
+  
+};
+
+const updatePassword = async (req,res) =>{
+  const {id, password} = req.body;
+  bcrypt.hash(password, saltRounds, (err, hash) => {
+    if (err) {
+      console.error(err);
+      res.sendStatus(500);
+    } else {
+      // Add garage to database
+      pool.query(
+        "UPDATE subadmins SET password = ? WHERE id = ?",
+        [hash, id],
+        (err, results) => {
+          if (err) {
+            console.error(err);
+            res.sendStatus(500);
+          } else {
+            // Redirect back to the manage garage list
+    
+            res.redirect("/subadmins/list");
+          }
+        }
+      );
+    }
+  });
 };
 
 // Edit SubAdmin
 const editSubAdmins = async (req, res) => {
-  const { id, name, mobile_number, state, password } = req.body;
+  const { id, name, mobile_number, state_id, city, password } = req.body;
   // Update garage to database
   pool.query(
-    "UPDATE subadmins SET name = ?, mobile_number = ?, state = ?, password = ? WHERE id = ?",
-    [name, mobile_number, state, password, id],
-    (err, results) => {
+    "SELECT * FROM states WHERE states.id = ?",[state_id],
+    (err,results)=>{
       if (err) {
         console.error(err);
         res.sendStatus(500);
       } else {
-        // Redirect back to the manage garage list
-
-        res.redirect("/subadmins/list");
+      console.log("hello there");
+      const state = results[0].state;
+      console.log(state);
+      pool.query(
+        "UPDATE subadmins SET name = ?, mobile_number = ?, state = ?, city = ? WHERE id = ?",
+        [name, mobile_number, state, city, id],
+        (err, results) => {
+          if (err) {
+            console.error(err);
+            res.sendStatus(500);
+          } else {
+            // Redirect back to the manage garage list
+    
+            res.redirect("/subadmins/list");
+          }
+        }
+      );
       }
     }
-  );
+  )
+  // pool.query(
+  //   "UPDATE subadmins SET name = ?, mobile_number = ?, state = ?, password = ? WHERE id = ?",
+  //   [name, mobile_number, state, city, password, id],
+  //   (err, results) => {
+  //     if (err) {
+  //       console.error(err);
+  //       res.sendStatus(500);
+  //     } else {
+  //       // Redirect back to the manage garage list
+
+  //       res.redirect("/subadmins/list");
+  //     }
+  //   }
+  // );
 };
 
 // Edit SubAdmin Page
@@ -156,6 +222,22 @@ const listSubAdmins = async (req, res) => {
   });
 };
 
+const getCitiesByStateId = (req, res) => {
+  const stateId = req.params.stateId;
+  pool.query(
+    "SELECT * FROM cities WHERE state_id = ?",
+    [stateId],
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        res.sendStatus(500);
+      } else {
+        res.json({ cities: results });
+      }
+    }
+  );
+};
+
 module.exports = {
   registerSubAdmins,
   editSubAdmins,
@@ -163,5 +245,7 @@ module.exports = {
   listSubAdmins,
   editSubAdminPage,
   addSubAdminsPage,
+  getCitiesByStateId,
+  updatePassword,
   validateInputs,
 };

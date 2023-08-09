@@ -21,7 +21,6 @@
                   <th>Axel</th>
                   <th>Offered Price</th>
                   <th>Status</th>
-
                   <th>Edit</th>
                   <th>Delete</th>
                   <th></th>
@@ -36,7 +35,8 @@
                   <td><%= row.car_name %></td>
                   <td><%= row.axel %></td>
                   <td><%= row.offered_price %></td>
-                  <td>   <button class="btn btn-<% if (row.status == "Pending") { %>secondary<% } else if (row.status == "Assigned") { %>info<% } else if (row.status == "Completed") { %>success<% } else if (row.status == "Cancelled") { %>danger<% } %> mb-3" >
+                  <td>   
+                    <button class="btn btn-<% if (row.status == "Pending") { %>secondary<% } else if (row.status == "Assigned") { %>info<% } else if (row.status == "Completed") { %>success<% } else if (row.status == "Cancelled") { %>danger<% } %> mb-3" >
                     <%= row.status %>
                   </button> </td>
                   

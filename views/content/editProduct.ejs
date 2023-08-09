@@ -1,0 +1,85 @@
+<div class="main-content-inner">
+  <div class="row">
+    <div class="col-lg-6 col-ml-12">
+      <div class="row">
+        <!-- Textual inputs start -->
+        <div class="col-12 mt-5">
+          <div class="card">
+            <div class="card-body">
+              <form action="/products/edit?_method=PUT" method="post">
+                <div class="form-group">
+                  <h4 class="header-title">Edit Product: <%= category_name.category_name %></h4>
+                  <div class="form-group">
+                    <label for="Select">Select Company:</label>
+                    <select name="company_id" id="SelectCompany" class="form-control">
+                      <% company.forEach((row) => { %>
+                        <option value="<%= row.id %>"><%= row.company %></option>
+                        <% }); %>
+                      </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="Select">Select Car:</label>
+                    <select name="car_name" id="SelectCar" class="form-control"></select>
+                  </div>
+                  <div class="form-group">
+                    <label for="example-text-input" class="col-form-label">
+                      Price
+                    </label>
+                    <input
+                      class="form-control"
+                      type="text"
+                      placeholder="Price"
+                      name="price"
+                      id="example-text-input"
+                    />
+                  </div>  
+                
+                <button class="btn btn-primary mb-3">Update Product</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- main content area end -->
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $("#SelectCompany").change(function () {
+      // console.log($(this));
+      const selectedCompanyId = $(this).val();
+      // console.log("Selected Company ID:", selectedCompanyId);
+      $.ajax({
+        url: `/products/get-cars/${selectedCompanyId}`,
+        method: "GET",
+        success: function (response) {
+          const cars = response.cars;
+          $("#SelectCar").empty();
+
+          if (cars.length === 0) {
+            $("#SelectCar").append(
+              $("<option>", {
+                text: "No Car Found in Above Company",
+                value: "",
+              })
+            );
+          } else {
+            cars.forEach(function (car) {
+              $("#SelectCar").append(
+                $("<option>", {
+                  text: car.car_name,
+                  value: car.car_name,
+                })
+              );
+            });
+          }
+        },
+        error: function (error) {
+          console.error(error);
+        },
+      });
+    });
+  });
+</script>
