@@ -146,19 +146,29 @@ const insertData = async (
 const editGaragesData = async (req, res) => {
   const { garage_name, address, state, city, mobile_number, lat, lng, id } =
     req.body;
-
-  // Update user to database
-  pool.query(
-    "UPDATE garages SET garage_name = ?, address = ?, state =?, city = ?, mobile_number = ?, lat = ?, lng =? WHERE id = ?",
-    [garage_name, address, state, city, mobile_number, lat, lng, id],
-    (err, results) => {
-      if (err) {
-        console.error(err);
-        res.sendStatus(500);
-      } else {
-        res.redirect("/garages/list");
-      }
+  pool.query("SELECT * FROM states WHERE states.id = ?",[state],
+  (err,results)=>{
+    if (err) {
+      console.error(err);
+      res.sendStatus(500);
+    } else {
+      console.log(results);
+      const state_name = results[0].state;
+      console.log(state_name);
+      pool.query(
+        "UPDATE garages SET garage_name = ?, address = ?, state =?, city = ?, mobile_number = ?, lat = ?, lng =? WHERE id = ?",
+        [garage_name, address, state_name, city, mobile_number, lat, lng, id],
+        (err, results) => {
+          if (err) {
+            console.error(err);
+            res.sendStatus(500);
+          } else {
+            res.redirect("/garages/list");
+          }
+        }
+      );
     }
+  }
   );
 };
 
@@ -330,8 +340,14 @@ const getCitiesByStateId = (req, res) => {
 
 
 const updateGaragePassword = async (req, res, next) => {
+  console.log(req.body);
   const { password, id } = req.body;
 
+  bcrypt.hash(password, saltRounds, (err, hash) => {
+    if (err) {
+      console.error(err);
+      res.sendStatus(500);
+    } else {
   pool.query(
     "UPDATE garages SET password = ? WHERE id = ?",
     [hash, id],
@@ -340,10 +356,12 @@ const updateGaragePassword = async (req, res, next) => {
         console.error(err);
         res.sendStatus(500);
       } else {
-        res.redirect("/garages/edit/page/" + id);
+        res.redirect("/garages/list");
       }
     }
   );
+}}
+);
 };
 
 module.exports = {

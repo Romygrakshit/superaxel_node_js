@@ -9,7 +9,7 @@ const {
   addCompanyPage,
   editCompanyPage,
 } = require("../controllers/companiesAPI");
-
+  
 router.route("/create").post(createCompany);
 router.route("/edit").put(editCompany);
 router.route("/delete/:id").delete(deleteCompany);

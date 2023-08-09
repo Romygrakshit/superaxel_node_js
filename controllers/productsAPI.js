@@ -72,20 +72,37 @@ const insertProduct = async(category_name,
   }
 )};
 const editProduct = async (req, res) => {
-  const { category_name, id } = req.body;
+  const { company_id, car_name, price, id } = req.body;
 
   pool.query(
-    "UPDATE products SET category_name = ? WHERE id = ?",
-    [category_name, id],
+    "SELECT * FROM companies WHERE companies.id = ?",
+    [company_id],
     (err, results) => {
       if (err) {
         console.error(err);
         res.sendStatus(500);
       } else {
-        res.redirect("/products/list");
+        if (results.length === 0) {
+          console.error("No company found with the specified name.");
+          res.sendStatus(500);
+          return;
+        }
+        const company_name = results[0].company;
+        pool.query(
+          "UPDATE products SET company_name = ?, car_name = ?, price = ? WHERE id = ?",
+          [company_name, car_name, price, id],
+          (err, results) => {
+            if (err) {
+              console.error(err);
+              res.sendStatus(500);
+            } else {
+              res.redirect("/products/list");
+            }
+          }
+        );
       }
     }
-  );
+  )
 };
 
 // Delete Company
@@ -118,13 +135,21 @@ const listProduct = async (req, res) => {
 };
 
 const listProductInventory = async (req, res) => {
-  pool.query("SELECT * FROM products_inventory", (err, results) => {
+  const query = `
+  SELECT pi.id, c.company, car.car_name, sa.name, pi.inventory
+  FROM products_inventory pi
+  LEFT JOIN companies c ON pi.company_id = c.id
+  LEFT JOIN cars car ON pi.car_id = car.id
+  LEFT JOIN subadmins sa ON pi.subadmin_id = sa.id
+`;
+  pool.query(query, (err, results) => {
     if (err) {
       console.error(err);
       res.sendStatus(500);
     } else {
       // Render the manage users template with the user data
       const added = req.query.added === "1";
+      
       res.render("manageProductInventoryPage", { products: results, added });
     }
   });
@@ -167,14 +192,28 @@ const addProductPage = async (req, res) => {
 
 const editProductPage = async (req, res) => {
   const id = req.params.id;
-  pool.query(`SELECT * FROM products WHERE id =${id}`, (err, results) => {
+  pool.query(`SELECT * FROM products WHERE id = ${id}`, (err, results) => {
     if (err) {
       console.error(err);
       res.sendStatus(500);
     } else {
-      // Render the manageusers.hbs template with the user data
       const category_name = results[0];
-      res.render("editProductsPage.ejs", { category_name });
+      pool.query(
+        'SELECT * FROM companies',
+        (err,results) =>{
+          if(err){
+            console.error(err);
+            res.sendStatus(500);
+          }else{
+            const company = results;
+
+            res.render("editProductsPage.ejs", {category_name, company});
+          }
+        }
+      )
+      // Render the editProduct.ejs template with the product data
+      // const category_name = results[0];
+      
     }
   });
 };

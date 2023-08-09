@@ -14,7 +14,6 @@ const {
 router.route("/create").post(createCars);
 router.route("/edit").put(editCars);
 router.route("/update/inventory").put(updateInventory);
-
 router.route("/delete/:id").delete(deleteCars);
 router.route("/list").get(listCars);
 router.route("/add").get(addCarsPage);

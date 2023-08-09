@@ -6,21 +6,17 @@
         <div class="col-12 mt-5">
           <div class="card">
             <div class="card-body">
-              <form
-                action="/enquires/register"
-                method="post"
-                enctype="multipart/form-data"
-              >
+              <form action="/enquires/update?_method=PUT" method="post">
                 <div class="form-group">
                   <h4 class="header-title">Edit Enquiry</h4>
-                  <label class="col-form-label">Garage_id</label>
+                  <label class="col-form-label">Garage Name</label>
                   <input
                     class="form-control"
-                    type="number"
-                    placeholder="Garage_id"
+                    type="text"
+                    placeholder="Garage Name"
                     id="example-text-input"
-                    name="garage_id"
-                    value="<%= enquiry.garage_id %>"
+                    name="garage_name"
+                    value="<%= results[0].garage_name %>"
                     disabled
                   />
                 </div>
@@ -33,51 +29,54 @@
                     type="text"
                     placeholder="Address"
                     name="address"
-                    value="<%= enquiry.address %>"
-                    disabled
+                    value="<%= results[0].address %>"
                     id="example-text-input"
                   />
                 </div>
-
                 <div class="form-group">
-                  <label for="Select">Select Company:</label>
-                  <select
-                    name="company"
-                    id="Select"
-                    class="form-control"
-                    disabled
-                  >
-                    <option><%= company.company %></option>
+                  <label for="Select">Select State:</label>
+                  <select name="state" id="SelectState" class="form-control">
+                    <% states.forEach((row) => { %>
+                    <option value="<%= row.state %>"><%= row.state %></option>
+                    <% }); %>
                   </select>
                 </div>
                 <div class="form-group">
-                  <label for="SelectCar">Select Car:</label>
+                  <label for="Select">Select Company:</label>
                   <select
-                    name="car_name"
+                    name="company_id"
+                    id="SelectCompany"
+                    class="form-control"
+                  >
+                  <option><%= results[0].company %></option>
+                    <% company.forEach((row) => { %>
+                    <option value="<%= row.id %>"><%= row.company %></option>
+                    <% }); %>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="Select">Select Car:</label>
+                  <select
+                    name="car_id"
                     id="SelectCar"
                     class="form-control"
-                    disabled
                   >
-                    <option><%= car.car_name %></option>
-                  </select>
+                  <option><%= results[0].car_name %></option>
+                </select>
                 </div>
                 <div class="form-group">
                   <label for="SelectAxel" class="col-form-label"
                     >Left Axel or Right Axel</label
                   >
-                  <select
-                    name="axel"
-                    id="SelectAxel"
-                    class="form-control"
-                    disabled
-                  >
-                    <option><%= enquiry.axel %></option>
+                  <select name="axel" id="SelectAxel" class="form-control">
+                    <option value="Right">Right</option>
+                    <option value="Left">Left</option>
                   </select>
                 </div>
 
                 <div class="form-group">
                   <label for="example-text-input" class="col-form-label"
-                    >Cordinates</label
+                    >Coordinates</label
                   >
                   <input
                     class="form-control"
@@ -85,8 +84,7 @@
                     placeholder="Latitude"
                     name="lat"
                     id="example-text-input"
-                    value="<%= enquiry.lat %>"
-                    disabled
+                    value="<%= results[0].lat %>"
                   />
                   <input
                     class="form-control"
@@ -94,125 +92,244 @@
                     placeholder="Longitude"
                     name="lng"
                     id="example-text-input"
-                    value="<%= enquiry.lng %>"
-                    disabled
+                    value="<%= results[0].lng %>"
                   />
                 </div>
-
                 <div class="form-group">
                   <label for="example-text-input" class="col-form-label"
-                    >Date and Time</label
+                    >Offered Price</label
                   >
                   <input
                     class="form-control"
                     type="text"
-                    placeholder="City"
-                    name="date_time"
+                    placeholder="Offered Price"
+                    name="offered_price"
+                    value="<%= results[0].offered_price %>"
                     id="example-text-input"
-                    value="<%= enquiry.date_time %>"
-                    disabled
                   />
                 </div>
+                <input type="hidden" name="id" value="<%= results[0].id %>" />
+                <button class="btn btn-primary mb-3">Update Enquiry</button>
               </form>
             </div>
           </div>
         </div>
-        <div class="col-6 mt-5">
-          <% imagesUrl.forEach(function(row) { %>
-          <div class="card col-md-12">
-            <!-- Textual inputs end -->
-            <% if ( row.url == 0) { %> No Image <% } else { %>
 
-            <img
-              style="height: 300px; width: 300px"
-              src="<%= row.url %>"
-              class="card-img-top"
-              alt="kuch toh hai"
-            />
-          </div>
-          <% } %> <% }); %>
-        </div>
-        <!-- Update Password -->
-        <div class="col-6 mt-5">
+        <!-- basic form end -->
+        <div class="col-12 mt-5">
           <div class="card">
             <div class="card-body">
               <h4 class="header-title">
-                Update Offered Price and status for: <%= enquiry.garage_id %>
+                Images for: <%= results[0].garage_name %> Garage Enquiry ID :
+                <%= results[0].id %>
               </h4>
-              <form action="/enquires/update?_method=PUT" method="post">
-                <div class="form-group">
-                  <label for="exampleInputEmail1"
-                    >Write New Offered Price:</label
-                  >
-                  <input
-                    type="text"
-                    class="form-control"
-                    name="offered_price"
-                    placeholder="offered Price"
-                    value="<%= enquiry.offered_price %>"
-                    required
+              <div class="form-group">
+                <label for="example-tel-input" class="col-form-label"
+                  >Profile Image:</label
+                >
+                <div class="card col-md-5">
+                  <% if ( results[0].url == 0) { %> No Profile Image <% } else {
+                  %>
+                  <img
+                    style="height: 150px; width: 200px;"
+                    src="<%= results[0].url %>"
+                    width="100px"
                   />
+
+                  <div class="row">
+                    <div class="col-md-5">
+                      <!-- <button
+                        type="button"
+                        class="badge btn-danger mt-4"
+                        data-toggle="modal"
+                        data-target="#exampleModalLong-deleteBanner "
+                      >
+                        Delete Profile Image
+                      </button>
+
+                      <div
+                        class="modal fade"
+                        id="exampleModalLong-deleteBanner"
+                      >
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">Delete Profile Image</h5>
+                              <button
+                                type="button"
+                                class="close"
+                                data-dismiss="modal"
+                              >
+                                <span>&times;</span>
+                              </button>
+                            </div>
+                            <form
+                              action="/enquires/edit/delete/images?_method=PUT"
+                              method="post"
+                            >
+                              <div class="modal-body">
+                                <div class="mb-3">
+                                  <label class="col-form-label"
+                                    >Do You Want To Delete Banner Image?
+                                  </label>
+                                  <input
+                                    class="form-control"
+                                    type="text"
+                                    name="id"
+                                    value="<%= results[0].id %>"
+                                    required
+                                  />
+
+                                  <input
+                                    class="form-control"
+                                    type="text"
+                                    name="url"
+                                    value="<%= results[0].url %>"
+                                    required
+                                  />
+                                </div>
+                              </div>
+                              <div class="modal-footer">
+                                <button
+                                  type="button"
+                                  class="btn btn-secondary"
+                                  data-dismiss="modal"
+                                >
+                                  Close
+                                </button>
+                                <button type="submit" class="btn btn-danger">
+                                  Delete
+                                </button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <% } %> -->
+                      <div class="col-md-5">
+                        <button
+                          type="button"
+                          class="badge btn-primary mt-4"
+                          data-toggle="modal"
+                          data-target="#exampleModalLong"
+                        >
+                          Update Profile Image
+                        </button>
+
+                        <div class="modal fade" id="exampleModalLong">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title">
+                                  Update Profile Image
+                                </h5>
+                                <button
+                                  type="button"
+                                  class="close"
+                                  data-dismiss="modal"
+                                >
+                                  <span>&times;</span>
+                                </button>
+                              </div>
+                              <form
+                                action="/enquires/edit/update/images?_method=PUT"
+                                method="post"
+                                enctype="multipart/form-data"
+                              >
+                                <div class="modal-body">
+                                  <div class="mb-3">
+                                    <label class="col-form-label"
+                                      >Upload Image You Want To Update Profile
+                                      Image With:</label
+                                    >
+                                    <input
+                                      class="form-control"
+                                      type="file"
+                                      name="enquiryImage"
+                                      required
+                                    />
+                                    <input
+                                      class="form-control"
+                                      type="text"
+                                      name="url"
+                                      value="<%= results[0].url %>"
+                                      required
+                                    />
+                                    <input
+                                      class="form-control"
+                                      type="hidden"
+                                      name="id"
+                                      value="<%= results[0].id %>"
+                                      required
+                                    />
+                                  </div>
+                                </div>
+                                <div class="modal-footer">
+                                  <button
+                                    type="button"
+                                    class="btn btn-secondary"
+                                    data-dismiss="modal"
+                                  >
+                                    Close
+                                  </button>
+                                  <button type="submit" class="btn btn-primary">
+                                    Update
+                                  </button>
+                                </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="form-group">
-                  <label for="SelectStatus">Select Status:</label>
-                  <select name="status" id="SelectStatus" class="form-control/">
-                    <option selected disabled><%= enquiry.status %></option>
-                    <% if (enquiry.status == "Pending") { %>
-                    <option>Assigned</option>
-                    <option>Completed</option>
-                    <option>Cancelled</option>
-                    <% } else if (enquiry.status == "Assigned") { %>
-                    <option>Pending</option>
-                    <option>Completed</option>
-                    <option>Cancelled</option>
-
-                    <% } else if (enquiry.status == "Completed") { %>
-                    <option>Pending</option>
-                    <option>Assigned</option>
-                    <option>Cancelled</option>
-
-                    <% } else if (enquiry.status == "Cancelled") { %>
-                    <option>Pending</option>
-                    <option>Assigned</option>
-                    <option>Completed</option>
-                    <% } %>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="SelectBoy">Select Delivery Boy:</label>
-                  <select
-                    name="delivery_boy"
-                    id="SelectStatus"
-                    class="form-control/"
-                  >
-                    <% boy.forEach((row) => { %>
-                    <option value="<%= row.delivery_boy %>">
-                      <%= row.name %>
-                    </option>
-
-                    <% }); %>
-                  </select>
-                </div>
-
-                <input
-                  class="form-control"
-                  type="text"
-                  name="id"
-                  value="<%= enquiryId.id %>"
-                  required
-                />
-
-                <button type="submit" class="btn btn-primary mb-3">
-                  Update
-                </button>
-              </form>
+              </div>
             </div>
           </div>
+          <!-- main content area end -->
         </div>
-        <!-- basic form end -->
-
-        <!-- main content area end -->
       </div>
     </div>
   </div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $("#SelectCompany").change(function () {
+        // console.log($(this));
+        const selectedCompanyId = $(this).val();
+        // console.log("Selected Company ID:", selectedCompanyId);
+        $.ajax({
+          url: `/enquires/get-cars/${selectedCompanyId}`,
+          method: "GET",
+          success: function (response) {
+            const cars = response.cars;
+            $("#SelectCar").empty();
+
+            if (cars.length === 0) {
+              $("#SelectCar").append(
+                $("<option>", {
+                  text: "No Car Found in Above Company",
+                  value: "",
+                })
+              );
+            } else {
+              cars.forEach(function (car) {
+                $("#SelectCar").append(
+                  $("<option>", {
+                    text: car.car_name,
+                    value: car.id,
+                  })
+                );
+              });
+            }
+          },
+          error: function (error) {
+            console.error(error);
+          },
+        });
+      });
+    });
+  </script>
 </div>

@@ -19,8 +19,8 @@
                   <th>Car Id</th>
                   <th>Subadmin Id</th>
                   <th>Inventory</th>
-                  <th>Edit</th>
-                  <th>Delete</th>
+                  <!-- <th>Edit</th>
+                  <th>Delete</th> -->
                   <th></th>
                 </tr>
               </thead>
@@ -28,11 +28,11 @@
                 <% products.forEach((row) => { %>
                 <tr>
                   <td><%= row.id %></td>
-                  <td><%= row.company_id %></td>
-                  <td><%= row.car_id %></td>
-                  <td><%= row.subadmin_id %></td>
+                  <td><%= row.company %></td>
+                  <td><%= row.car_name %></td>
+                  <td><%= row.name %></td>
                   <td><%= row.inventory %></td>
-                  <td>
+                  <!-- <td>
                     <div class="icon-container">
                       <a href="edit/page/<%= row.id %>"
                         ><span class="ti-marker-alt"></span
@@ -89,7 +89,7 @@
                         </div>
                       </div>
                     </div>
-                  </td>
+                  </td> -->
                   <td></td>
                 </tr>
 
