@@ -128,9 +128,9 @@ const editSubAdmins = async (req, res) => {
         console.error(err);
         res.sendStatus(500);
       } else {
-      console.log("hello there");
+      // console.log("hello there");
       const state = results[0].state;
-      console.log(state);
+      // console.log(state);
       pool.query(
         "UPDATE subadmins SET name = ?, mobile_number = ?, state = ?, city = ? WHERE id = ?",
         [name, mobile_number, state, city, id],

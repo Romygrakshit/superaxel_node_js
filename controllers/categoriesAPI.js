@@ -83,7 +83,7 @@ const editCategoryPage = async (req, res) => {
     } else {
       // Render the manageusers.hbs template with the user data
       const category_name = results[0];
-      console.log(category_name);
+      // console.log(category_name);
       res.render("editCategoryPage.ejs", { category_name });
     }
   });

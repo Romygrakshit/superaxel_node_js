@@ -190,7 +190,7 @@
             } else if (ele.msRequestFullscreen) {
                 ele.msRequestFullscreen();
             } else {
-                console.log('Fullscreen API is not supported.');
+                // console.log('Fullscreen API is not supported.');
             }
         };
 
@@ -204,7 +204,7 @@
             } else if (document.msExitFullscreen) {
                 document.msExitFullscreen();
             } else {
-                console.log('Fullscreen API is not supported.');
+                // console.log('Fullscreen API is not supported.');
             }
         };
 

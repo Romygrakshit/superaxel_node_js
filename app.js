@@ -77,7 +77,7 @@ app.post("/login", (req, res) => {
       // res.redirect("/cars/list"); // for testing
     } else {
       // Check if any rows were returned from the database query
-      console.log(results);
+      // console.log(results);
       if (results.length === 1) {
         // Login successful, redirect to a protected page or dashboard
         res.redirect("/cars/list");

@@ -12,7 +12,7 @@ const pool = mysql.createPool({
 
 const newInventory = async (req, res) => {
   try {
-    console.log(req.body)
+    // console.log(req.body)
     const {
       car_name,
       left_axel_price,
@@ -199,16 +199,16 @@ const deleteInventory = async (req, res) => {
 // Manage Inventory Page
 const listInventoryAdmin = async (req, res) => {
   let {Id} = req.body;
-  console.log("Body:", Id);
+  // console.log("Body:", Id);
 
   if (Id == undefined) {
-    console.log("params:", Id);
+    // console.log("params:", Id);
     Id = req.params.id;
   }
   if (Id == undefined) {
     Id = 1;
   }
-  console.log(Id);
+  // console.log(Id);
   // Fetch data from the "subadmins" table
   pool.query(`SELECT * FROM subadmins WHERE id = ?`, [Id], (err, results) => {
     if (err) {
@@ -216,7 +216,7 @@ const listInventoryAdmin = async (req, res) => {
       res.sendStatus(500);
     } else {
       const subadmin = results[0];
-      console.log(subadmin)
+      // console.log(subadmin)
       // Render the manageInventoryPage.ejs with Inventory data
       pool.query(`SELECT * FROM subadmins WHERE id != ${Id}`, (err, results) => {
         if (err) {
@@ -230,7 +230,7 @@ const listInventoryAdmin = async (req, res) => {
               res.sendStatus(500);
             } else {
               const inventory = results;
-              console.log(inventory);
+              // console.log(inventory);
               // console.log(subadmins);
               // Render the manageInventoryPage.ejs with Inventory data
               res.render("manageInventoryPage", {inventory, subadmin, subadmins});
