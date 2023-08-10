@@ -25,7 +25,7 @@ router.get("/get-cities/:stateId", getCitiesByStateId);
 router.route("/edit/update/images").put(updateEnquiryImage);
 router.route("/edit/delete/images").put(deleteEnquiryImage);
 router.get("/get-cars/:companyId", getCarsByCompanyId);
-router.get("/api/list", garageApi.listEnquires);
+router.get("/api/list/:id", garageApi.listEnquires);
 router.post("/api/create", garageApi.newEnquires); 
 
 module.exports = router;
