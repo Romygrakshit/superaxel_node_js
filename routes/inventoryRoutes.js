@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const garageApi = require("../controllers/api/inventoryAPI.js");
 
 const {
   newInventory,
@@ -11,6 +12,7 @@ const {
   changeInventory,
 } = require("../controllers/inventoryAPI");
 
+router.route("/api/list/:id").get(garageApi.listInventorySubadmin);
 router.route("/register").post(newInventory);
 router.route("/add").get(addInventoryPage);
 router.route("/edit").put(editInventory);

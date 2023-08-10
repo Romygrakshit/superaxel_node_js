@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const garageApi = require("../controllers/api/productAPI");
 
 const {
   createProduct,
@@ -24,5 +25,10 @@ router.route("/edit/page/:id").get(editProductPage);
 router.route("/add-inventory/:companyName/:carName").get(addProductInventoryPage);
 router.get("/get-cars/:companyId", getCarsByCompanyId);
 router.post('/add-inventory',addProductInventory);
+router.get("/api/inventory/list", garageApi.listInventory);
+router.get("/api/list/:companyName/:carName", garageApi.listProduct);
+// router.post("/api/create", garageApi.newEnquires);
+// router.post("/api/add-inventory/:companyName/:carName",garageApi.addProductInventoryPage);
+
 
 module.exports = router;

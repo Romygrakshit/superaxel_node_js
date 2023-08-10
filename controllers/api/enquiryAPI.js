@@ -34,8 +34,10 @@ const upload = multer({ storage: storageEngine });
 
 module.exports.listEnquires = async (req, res) => {
   // Fetch data from the "Clubs" table
+  const id = req.params.id;
   pool.query(
-    "SELECT *,enquires.id FROM enquires LEFT JOIN delivery_boy ON enquires.delivery_boy = delivery_boy.id LEFT JOIN companies ON enquires.company_id = companies.id LEFT JOIN cars ON enquires.car_id = cars.id",
+    "SELECT * FROM enquires LEFT JOIN delivery_boy ON enquires.delivery_boy = delivery_boy.id LEFT JOIN companies ON enquires.company_id = companies.id LEFT JOIN cars ON enquires.car_id = cars.id WHERE enquires.garage_id = ?",
+    [id],
     (err, results) => {
       if (err) {
         console.error(err);
