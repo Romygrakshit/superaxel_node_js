@@ -152,7 +152,19 @@ const changeInventory = async (req, res) => {
       console.error(err);
       res.sendStatus(500);
     } else {
-      res.redirect("/inventory/list/" + id);
+      pool.query("SELECT subadmin_id FROM inventory WHERE id= ?",[id],
+      (err,results) => {
+        if (err){
+          console.error(err)
+          res.sendStatus(500);
+      }else{
+        // console.log(results[0])
+        const subadmin_id = results[0].subadmin_id;
+        res.redirect(`/inventory/list/${subadmin_id}?_method=PUT`);
+
+      }}
+      )
+     
     }
   });
 };
@@ -199,7 +211,7 @@ const deleteInventory = async (req, res) => {
 // Manage Inventory Page
 const listInventoryAdmin = async (req, res) => {
   let {Id} = req.body;
-  // console.log("Body:", Id);
+  // console.log("Body:", req.body);
 
   if (Id == undefined) {
     // console.log("params:", Id);
@@ -208,7 +220,7 @@ const listInventoryAdmin = async (req, res) => {
   if (Id == undefined) {
     Id = 1;
   }
-  // console.log(Id);
+  // console.log('id==>'+Id);
   // Fetch data from the "subadmins" table
   pool.query(`SELECT * FROM subadmins WHERE id = ?`, [Id], (err, results) => {
     if (err) {
@@ -216,7 +228,7 @@ const listInventoryAdmin = async (req, res) => {
       res.sendStatus(500);
     } else {
       const subadmin = results[0];
-      // console.log(subadmin)
+      // console.log("SUBADMIN:"+subadmin)
       // Render the manageInventoryPage.ejs with Inventory data
       pool.query(`SELECT * FROM subadmins WHERE id != ${Id}`, (err, results) => {
         if (err) {
@@ -230,10 +242,11 @@ const listInventoryAdmin = async (req, res) => {
               res.sendStatus(500);
             } else {
               const inventory = results;
-              // console.log(inventory);
-              // console.log(subadmins);
+              // console.log("INVENTORY:"+inventory);
+              // console.log("SUBADMINS:"+subadmins);
               // Render the manageInventoryPage.ejs with Inventory data
-              res.render("manageInventoryPage", {inventory, subadmin, subadmins});
+              res.render("manageInventoryPage", { inventory, subadmin, subadmins });
+
               // res.json(inventory);
             }
           });
