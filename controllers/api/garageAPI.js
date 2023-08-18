@@ -303,18 +303,100 @@ module.exports.getCars = async (req, res) => {
   }
 };
 
+// module.exports.getPrice = (req, res) => {
+//   try {
+//     const car = req.body.car;
+//     pool.query(
+//       "select * from cars where car_name = ?",
+//       [car],
+//       (req, results) => {
+//         pool.query(
+//           "select * from inventory where car_id = ?",
+//           [results[0].id],
+//           (req, results) => {
+//             res.json({ success: true, data: results });
+//           }
+//         );
+//       }
+//     );
+//   } catch (error) {
+//     console.log(error);
+//     res.json({ success: false });
+//   }
+// };
+
 module.exports.getPrice = (req, res) => {
   try {
     const car = req.body.car;
+    const gID = req.body.gID;
+    // First, fetch the state of the garage using gID
     pool.query(
-      "select * from cars where car_name = ?",
-      [car],
-      (req, results) => {
+      "SELECT state FROM garages WHERE id = ?",
+      [gID],
+      (error, garageResults) => {
+        if (error) {
+          console.log(error);
+          res.json({ success: false });
+          return;
+        }
+
+        const garageState = garageResults[0].state;
+
+        // Then, fetch the inventory prices based on car_id and garageState
         pool.query(
-          "select * from inventory where car_id = ?",
-          [results[0].id],
-          (req, results) => {
-            res.json({ success: true, data: results });
+          "SELECT inventory.* FROM inventory " +
+          "JOIN subadmins ON inventory.subadmin_id = subadmins.id " +
+          "WHERE inventory.car_id = ? AND subadmins.state = ?",
+          [car, garageState],
+          (error, inventoryResults) => {
+            if (error) {
+              console.log(error);
+              res.json({ success: false });
+              return;
+            }
+
+            res.json({ success: true, data: inventoryResults });
+          }
+        );
+      }
+    );
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false });
+  }
+};
+
+module.exports.getProductPrice = (req, res) => {
+  try {
+    const car = req.body.car;
+    const gID = req.body.gID;
+    const categoryID = req.body.category;
+
+    // First, fetch the state of the garage using gID
+    pool.query(
+      "SELECT state FROM garages WHERE id = ?",
+      [gID],
+      (error, garageResults) => {
+        if (error) {
+          console.log(error);
+          res.json({ success: false });
+          return;
+        }
+
+        const garageState = garageResults[0].state;
+
+        const query = "SELECT * FROM products_inventory  JOIN subadmins ON products_inventory.subadmin_id = subadmins.id JOIN categories ON products_inventory.category_id = categories.id WHERE products_inventory.car_id = ? AND subadmins.state = ? AND products_inventory.category_id = ?"
+        pool.query(
+          query,
+          [car, garageState,categoryID],
+          (error, inventoryResults) => {
+            if (error) {
+              console.log(error);
+              res.json({ success: false });
+              return;
+            }
+
+            res.json({ success: true, data: inventoryResults });
           }
         );
       }

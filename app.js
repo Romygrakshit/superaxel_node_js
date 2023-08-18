@@ -56,6 +56,10 @@ app.use("/garages", garages_routes);
 app.use("/enquires", enquires_routes);
 app.use("/inventory", inventory_routes);
 
+app.get("/privacy", (req, res) => {
+  res.render("privacy");
+});
+
 // Route to show the login page
 app.get("/login", (req, res) => {
   const logout = req.query.logout === 'true';

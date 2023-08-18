@@ -22,7 +22,7 @@ router.route("/list").get(listProduct);
 router.route("/inventory/list").get(listProductInventory);
 router.route("/add").get(addProductPage);
 router.route("/edit/page/:id").get(editProductPage);
-router.route("/add-inventory/:companyName/:carName").get(addProductInventoryPage);
+router.route("/add-inventory/:categoryName/:companyName/:carName").get(addProductInventoryPage);
 router.get("/get-cars/:companyId", getCarsByCompanyId);
 router.post('/add-inventory',addProductInventory);
 router.get("/api/inventory/list", garageApi.listInventory);

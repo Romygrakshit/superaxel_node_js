@@ -60,6 +60,30 @@ module.exports.getEnquiryByState = (req, res) => {
   }
 };
 
+module.exports.getProductEnquiryByState = (req, res) => {
+  const subadmin_id = req.body.sID;
+
+  pool.query(
+    "SELECT * FROM subadmins WHERE id = ?",
+    [subadmin_id],
+    (err, results) => {
+      if (err) {
+        console.log(err);
+        res.json({ success: false });
+      } else {
+        const state = results[0].state;
+        pool.query(
+          "select * from products_enquires where state = ?",
+          [state],
+          (req, results) => {
+            res.json({ success: true, data: results });
+          }
+        );
+      }
+    }
+  );
+};
+
 module.exports.updateEnq = (req, res) => {
   try {
     pool.query(

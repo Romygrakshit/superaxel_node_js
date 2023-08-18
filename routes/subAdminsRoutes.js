@@ -26,6 +26,7 @@ router.route("/delete/:id").put(deleteSubAdmins);
 router.route("/list").get(listSubAdmins);
 router.post('/api/createInventory', subAdminAPI.createInventory); 
 router.post('/api/getEnqbyState', subAdminAPI.getEnquiryByState); 
+router.post('/api/getProductEnqbyState', subAdminAPI.getProductEnquiryByState); 
 router.post('/api/updateEnq', subAdminAPI.updateEnq); 
 // router.route("/upload").post(upload);
 
