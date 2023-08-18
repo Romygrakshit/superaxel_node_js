@@ -49,6 +49,63 @@ module.exports.listEnquires = async (req, res) => {
   );
 };
 
+module.exports.getCategory = async (req, res) => {
+  pool.query(
+    "SELECT * FROM categories",
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        res.status(500).json({ success: false, error: err });
+      } else {
+        res.status(400).json({ success: true, data: results });
+      }
+    }
+  );
+};
+
+module.exports.newProductEnquiry = async (req, res) => {
+  const {
+    category_id,
+    garage_id,
+    company_id,
+    car_id,
+    price,
+  } = req.body;
+  pool.query(
+    "SELECT state FROM garages WHERE id = ?",
+    [garage_id],
+    (error, garageResults) => {
+      if (error) {
+        console.log(error);
+        res.json({ success: false });
+        return;
+      }
+
+      const state = garageResults[0].state;
+      pool.query(
+        "INSERT INTO products_enquires SET ?",
+        {
+          category_id,
+        garage_id,
+        company_id,
+        car_id,
+        price,
+        state,
+        },
+        (err, results) => {
+          if (err) {
+            console.error(err);
+            res.json({ success: false });
+          } else {
+            // console.log(results);
+            // console.log("success");
+            res.status(404).json({ success: true ,data:results});
+          }
+        }
+      );
+    })
+};
+
 module.exports.newEnquires = async (req, res, next) => {
   try {
     upload.fields([{ name: "enquiryImages", maxCount: 9 }])(req, res, (err) => {

@@ -235,7 +235,7 @@ const getCarsByCompanyId = (req, res) => {
 };
 
 const addProductInventoryPage = async (req, res) => {
-  const { companyName, carName } = req.params;
+  const { categoryName,companyName, carName } = req.params;
   // Pass the company_name and car_name to the addProductInventory.ejs template
   pool.query(
     "SELECT * FROM subadmins",
@@ -263,7 +263,14 @@ const addProductInventoryPage = async (req, res) => {
                     res.sendStatus(500);
                   }else{
                     const car_id = results[0].id;
-                    res.render("addProductInventoryPage.ejs", { company_id, car_id , subadmin });
+                    pool.query("SELECT * FROM categories WHERE category_name = ?", [categoryName], (err, results) => {
+                      if(err){
+                        console.error(err);
+                        res.sendStatus(500);
+                      }else{
+                        const category_id = results[0].id;
+                        res.render("addProductInventoryPage.ejs", {category_id, company_id, car_id , subadmin });
+                    }})
                   }
                 }
               )
@@ -277,11 +284,12 @@ const addProductInventoryPage = async (req, res) => {
 };
 
 const addProductInventory = async (req, res) => {
-  const { company_id, car_id, subadmin_id, inventory } = req.body;
+  const {  category_id,company_id, car_id, subadmin_id, inventory } = req.body;
 
   pool.query(
     "INSERT INTO products_inventory SET ?",
     {
+      category_id,
       company_id,
       car_id,
       subadmin_id,
