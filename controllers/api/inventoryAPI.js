@@ -40,7 +40,7 @@ module.exports.listInventorySubadmin = async (req, res) => {
               res.status(500).json({ success: false, error: err });
             } else {
               const inventory = results;
-              res.status(400).json({ success: true, data: inventory });
+              res.status(200).json({ success: true, data: inventory });
             }
           });
         }

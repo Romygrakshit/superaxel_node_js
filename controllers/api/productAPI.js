@@ -23,7 +23,7 @@ module.exports.listInventory = async (req, res) => {
         console.error(err);
         res.status(500).json({ success: false, error: err });
       } else {
-        res.status(400).json({ success: true, data: results });
+        res.status(200).json({ success: true, data: results });
       }
     }
   );
@@ -39,7 +39,7 @@ module.exports.listProduct = async (req, res) => {
         console.error(err);
         res.status(500).json({ success: false, error: err });
       } else {
-        res.status(400).json({ success: true, data: results });
+        res.status(200).json({ success: true, data: results });
       }
     }
   );
