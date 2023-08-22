@@ -245,31 +245,70 @@ module.exports.verify = async (req, res) => {
   }
 };
 
+// module.exports.loginSubAdmin = (req, res) => {
+//   try {
+//     const { mobile_number, password } = req.body;
+//     pool.query(
+//       `select * from subadmins where mobile_number = ?`,
+//       [mobile_number],
+//       async (req, results) => {
+//         if (results) {
+//           let realPassword = results[0].password;
+//           if (!(await bcrypt.compare(password, realPassword))) {
+//             return res.json({ success: false, message: `Incorrect Password` });
+//           }
+//           res.json({
+//             success: true,
+//             message: "SubAdmin successfully logged in",
+//             data: {
+//               token: jwt.sign({ mobile_number }, "superaxel", {
+//                 expiresIn: "10000000000",
+//               }),
+//               SubAdmin: results[0],
+//             },
+//           });
+//         } else {
+//           res.json({ success: false, message: "SubAdmin does not exist" });
+//         }
+//       }
+//     );
+//   } catch (error) {
+//     console.log(error);
+//     res.json({ success: false, message: "Error detected" });
+//   }
+// };
+
 module.exports.loginSubAdmin = (req, res) => {
   try {
     const { mobile_number, password } = req.body;
     pool.query(
       `select * from subadmins where mobile_number = ?`,
       [mobile_number],
-      async (req, results) => {
-        if (results) {
-          let realPassword = results[0].password;
-          if (!(await bcrypt.compare(password, realPassword))) {
-            return res.json({ success: false, message: `Incorrect Password` });
-          }
-          res.json({
-            success: true,
-            message: "SubAdmin successfully logged in",
-            data: {
-              token: jwt.sign({ mobile_number }, "superaxel", {
-                expiresIn: "10000000000",
-              }),
-              SubAdmin: results[0],
-            },
-          });
-        } else {
-          res.json({ success: false, message: "SubAdmin does not exist" });
+      async (err, results) => {  
+        if (err) {  
+          console.log(err);
+          return res.json({ success: false, message: "Database error" });
         }
+
+        if (results.length === 0) {
+          return res.json({ success: false, message: "SubAdmin does not exist" });
+        }
+
+        let realPassword = results[0].password;
+        if (!(await bcrypt.compare(password.toString(), realPassword))) {
+          return res.json({ success: false, message: "Incorrect Password" });
+        }
+
+        res.json({
+          success: true,
+          message: "SubAdmin successfully logged in",
+          data: {
+            token: jwt.sign({ mobile_number }, "superaxel", {
+              expiresIn: "10000000000",
+            }),
+            SubAdmin: results[0],
+          },
+        });
       }
     );
   } catch (error) {
@@ -277,6 +316,7 @@ module.exports.loginSubAdmin = (req, res) => {
     res.json({ success: false, message: "Error detected" });
   }
 };
+
 
 module.exports.getCars = async (req, res) => {
   try {
@@ -385,7 +425,7 @@ module.exports.getProductPrice = (req, res) => {
 
         const garageState = garageResults[0].state;
 
-        const query = "SELECT * FROM products_inventory  JOIN subadmins ON products_inventory.subadmin_id = subadmins.id JOIN categories ON products_inventory.category_id = categories.id WHERE products_inventory.car_id = ? AND subadmins.state = ? AND products_inventory.category_id = ?"
+        const query = "SELECT products.id AS product_id, products.category_name, products.company_name, products.car_name, products.price, products_inventory.inventory, subadmins.state FROM products JOIN categories ON products.category_name = categories.category_name JOIN products_inventory ON categories.id = products_inventory.category_id JOIN subadmins ON products_inventory.subadmin_id = subadmins.id WHERE products_inventory.car_id = ? AND subadmins.state =? AND products_inventory.category_id = ?"
         pool.query(
           query,
           [car, garageState,categoryID],
