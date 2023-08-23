@@ -36,7 +36,7 @@ module.exports.listEnquires = async (req, res) => {
   // Fetch data from the "Clubs" table
   const id = req.params.id;
   pool.query(
-    "SELECT * FROM enquires LEFT JOIN delivery_boy ON enquires.delivery_boy = delivery_boy.id LEFT JOIN companies ON enquires.company_id = companies.id LEFT JOIN cars ON enquires.car_id = cars.id WHERE enquires.garage_id = ?",
+    "SELECT enquires.id,car_name,company,url AS image_url,address,status,state FROM enquires LEFT JOIN delivery_boy ON enquires.delivery_boy = delivery_boy.id LEFT JOIN companies ON enquires.company_id = companies.id LEFT JOIN cars ON enquires.car_id = cars.id LEFT JOIN images ON enquires.images_id = images.id WHERE enquires.garage_id = ?",
     [id],
     (err, results) => {
       if (err) {
@@ -158,13 +158,13 @@ module.exports.newEnquires = async (req, res, next) => {
                 // console.log(results);
                 if (err) {
                   console.error(err);
-                  res.json({ success: false });
+                  // res.json({ success: false , err});
                 } else {
                   const car_id = results[0].id;
                   pool.query("SELECT * FROM garages WHERE id = ?",[garage_id],(err,results)=>{
                     if (err) {
                       console.error(err);
-                      res.json({ success: false });
+                      res.json({ success: false});
                     } else {
                       const state = results[0].state;
                       insertData(
