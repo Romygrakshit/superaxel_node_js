@@ -71,6 +71,7 @@ module.exports.newProductEnquiry = async (req, res) => {
     car_id,
     price,
   } = req.body;
+  console.log(req.body)
   pool.query(
     "SELECT state FROM garages WHERE id = ?",
     [garage_id],
@@ -124,10 +125,7 @@ module.exports.newEnquires = async (req, res, next) => {
         car_name,
         axel,
         offered_price,
-        state,
       } = req.body;
-
-      // console.log(req.files);
 
       const imageUrls = req.files["enquiryImages"].map((file) => {
         return "/../img/enquires/" + file.filename;
@@ -151,7 +149,6 @@ module.exports.newEnquires = async (req, res, next) => {
           if (err) {
             console.error(err);
           } else {
-            // console.log(results);
             const company_id = results[0].id;
             // console.log(company_id);
             pool.query(
@@ -164,20 +161,28 @@ module.exports.newEnquires = async (req, res, next) => {
                   res.json({ success: false });
                 } else {
                   const car_id = results[0].id;
-                  insertData(
-                    garage_id,
-                    address,
-                    lat,
-                    lng,
-                    company_id,
-                    car_id,
-                    axel,
-                    offered_price,
-                    status,
-                    state,
-                    imageUrls,
-                    res
-                  );
+                  pool.query("SELECT * FROM garages WHERE id = ?",[garage_id],(err,results)=>{
+                    if (err) {
+                      console.error(err);
+                      res.json({ success: false });
+                    } else {
+                      const state = results[0].state;
+                      insertData(
+                        garage_id,
+                        address,
+                        lat,
+                        lng,
+                        company_id,
+                        car_id,
+                        axel,
+                        offered_price,
+                        status,
+                        state,
+                        imageUrls,
+                        res
+                      );
+                    }
+                  })
                 }
               }
             );
@@ -252,13 +257,13 @@ const insertData = async (
           } else {
             // console.log(results);
             // console.log("success");
-            res.status(404).json({ success: true });
+            res.status(200).json({ success: true });
           }
         }
       );
     })
     .catch((err) => {
       console.error(err);
-      res.json({ success: false });
+      res.status(500).json({ success: false });
     });
 };
