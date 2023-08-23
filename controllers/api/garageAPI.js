@@ -167,25 +167,31 @@ module.exports.login_garage = async (req, res) => {
     pool.query(
       `select * from garages where mobile_number = ?`,
       [mobile_number],
-      async (req, results) => {
-        if (results) {
-          let realPassword = results[0].password;
-          if (!(await bcrypt.compare(password, realPassword))) {
-            return res.json({ success: false, message: `Incorrect Password` });
-          }
-          res.json({
-            success: true,
-            message: "User successfully logged in",
-            data: {
-              token: jwt.sign({ mobile_number }, "superaxel", {
-                expiresIn: "10000000000",
-              }),
-              garage: results[0],
-            },
-          });
-        } else {
-          res.json({ success: false, message: "User does not exist" });
+      async (err, results) => {  
+        if (err) {  
+          console.log(err);
+          return res.json({ success: false, message: "Database error" });
         }
+
+        if (results.length === 0) {
+          return res.json({ success: false, message: "Garage does not exist" });
+        }
+
+        let realPassword = results[0].password;
+        if (!(await bcrypt.compare(password.toString(), realPassword))) {
+          return res.json({ success: false, message: "Incorrect Password" });
+        }
+
+        res.json({
+          success: true,
+          message: "Garage successfully logged in",
+          data: {
+            token: jwt.sign({ mobile_number }, "superaxel", {
+              expiresIn: "10000000000",
+            }),
+            garage: results[0],
+          },
+        });
       }
     );
   } catch (error) {
