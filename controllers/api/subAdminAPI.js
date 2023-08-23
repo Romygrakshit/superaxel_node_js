@@ -47,11 +47,29 @@ module.exports.createInventory = (req, res) => {
 
 module.exports.getEnquiryByState = (req, res) => {
   try {
+    const subadmin_id = req.body.sID;
     pool.query(
-      "select * from enquires where state = ?",
-      [req.body.state],
-      (req, results) => {
-        res.json({ success: true, data: results });
+      "SELECT * FROM subadmins WHERE id = ?",
+      [subadmin_id],
+      (err, results) => {
+        if (err) {
+          console.log(err);
+          res.json({ success: false });
+        } else {
+          const state = results[0].state;
+          pool.query(
+            "select * from enquires where state = ?",
+            [state],
+            (err, results) => {
+              if(err){
+                console.log(err)
+                res.json({ success: false });
+              }else{
+                res.json({ success: true, data: results });
+              }
+            }
+          );
+        }
       }
     );
   } catch (err) {
@@ -73,7 +91,7 @@ module.exports.getProductEnquiryByState = (req, res) => {
       } else {
         const state = results[0].state;
         pool.query(
-          "select * from products_enquires where state = ?",
+          "select products_enquires.id,company,car_name,garage_name,category_name,products_enquires.state,products_enquires.price from products_enquires LEFT JOIN companies ON products_enquires.company_id = companies.id LEFT JOIN cars ON products_enquires.car_id = cars.id LEFT JOIN garages ON products_enquires.garage_id = garages.id LEFT JOIN categories ON products_enquires.category_id = categories.id where products_enquires.state = ?",
           [state],
           (req, results) => {
             res.json({ success: true, data: results });
