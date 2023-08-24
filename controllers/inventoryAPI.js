@@ -76,12 +76,12 @@ const insertData = async (car_id,
 // Add Inventory Page
 const addInventoryPage = async (req, res) => {
   try {
-    pool.query(`SELECT * FROM cars`, (err, results) => {
+    pool.query(`SELECT * FROM companies`, (err, results) => {
       if (err) {
         console.error(err);
         res.sendStatus(500);
       } else {
-        const car = results;
+        const company = results;
         pool.query(`SELECT * FROM subadmins`, (err, results) => {
           if (err) {
             console.error(err);
@@ -89,7 +89,7 @@ const addInventoryPage = async (req, res) => {
           } else {
             const subadmins = results;
             // Render the editSubAdminPage.ejs with SubAdmin data
-            res.render("addInventoryPage.ejs", {car, subadmins});
+            res.render("addInventoryPage.ejs", {company, subadmins});
           }
         });
       }
@@ -196,14 +196,13 @@ const editInventory = async (req, res) => {
 
 // Delete Inventory
 const deleteInventory = async (req, res) => {
-  const subAdminId = req.params.id;
-  const deleted = 1;
-  pool.query(`UPDATE subadmins SET deleted = ${deleted} WHERE id = ${subAdminId}`, (err, results) => {
+  const inventoryId = req.params.id;
+  pool.query(`DELETE FROM inventory WHERE id = ${inventoryId}`, (err, results) => {
     if (err) {
       console.error(err);
       res.sendStatus(500);
     } else { // Redirect back to the manage garage list
-      res.redirect("/subadmins/list");
+      res.redirect("/inventory/list");
     }
   });
 };
@@ -256,6 +255,22 @@ const listInventoryAdmin = async (req, res) => {
   });
 };
 
+const getCarsByCompanyId = (req, res) => {
+  const companyId = req.params.companyId;
+  pool.query(
+    "SELECT * FROM cars WHERE company_id = ?",
+    [companyId],
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        res.sendStatus(500);
+      } else {
+        res.json({ cars: results });
+      }
+    }
+  );
+};
+
 module.exports = {
   newInventory,
   editInventory,
@@ -263,5 +278,6 @@ module.exports = {
   listInventoryAdmin,
   editInventoryPage,
   addInventoryPage,
-  changeInventory
+  changeInventory,
+  getCarsByCompanyId
 };

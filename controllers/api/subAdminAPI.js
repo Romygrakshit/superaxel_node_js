@@ -58,7 +58,7 @@ module.exports.getEnquiryByState = (req, res) => {
         } else {
           const state = results[0].state;
           pool.query(
-            "select * from enquires where state = ?",
+            "select * from enquires LEFT JOIN images ON enquires.images_id = images.id where state = ?",
             [state],
             (err, results) => {
               if(err){

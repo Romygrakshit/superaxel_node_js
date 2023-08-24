@@ -251,39 +251,6 @@ module.exports.verify = async (req, res) => {
   }
 };
 
-// module.exports.loginSubAdmin = (req, res) => {
-//   try {
-//     const { mobile_number, password } = req.body;
-//     pool.query(
-//       `select * from subadmins where mobile_number = ?`,
-//       [mobile_number],
-//       async (req, results) => {
-//         if (results) {
-//           let realPassword = results[0].password;
-//           if (!(await bcrypt.compare(password, realPassword))) {
-//             return res.json({ success: false, message: `Incorrect Password` });
-//           }
-//           res.json({
-//             success: true,
-//             message: "SubAdmin successfully logged in",
-//             data: {
-//               token: jwt.sign({ mobile_number }, "superaxel", {
-//                 expiresIn: "10000000000",
-//               }),
-//               SubAdmin: results[0],
-//             },
-//           });
-//         } else {
-//           res.json({ success: false, message: "SubAdmin does not exist" });
-//         }
-//       }
-//     );
-//   } catch (error) {
-//     console.log(error);
-//     res.json({ success: false, message: "Error detected" });
-//   }
-// };
-
 module.exports.loginSubAdmin = (req, res) => {
   try {
     const { mobile_number, password } = req.body;
@@ -323,7 +290,6 @@ module.exports.loginSubAdmin = (req, res) => {
   }
 };
 
-
 module.exports.getCars = async (req, res) => {
   try {
     const company = req.body.company;
@@ -348,28 +314,6 @@ module.exports.getCars = async (req, res) => {
     res.json({ success: false });
   }
 };
-
-// module.exports.getPrice = (req, res) => {
-//   try {
-//     const car = req.body.car;
-//     pool.query(
-//       "select * from cars where car_name = ?",
-//       [car],
-//       (req, results) => {
-//         pool.query(
-//           "select * from inventory where car_id = ?",
-//           [results[0].id],
-//           (req, results) => {
-//             res.json({ success: true, data: results });
-//           }
-//         );
-//       }
-//     );
-//   } catch (error) {
-//     console.log(error);
-//     res.json({ success: false });
-//   }
-// };
 
 module.exports.getPrice = (req, res) => {
   try {
@@ -465,6 +409,23 @@ module.exports.getCitiesByStateId = (req, res) => {
         res.sendStatus(500);
       } else {
         res.json({ cities: results });
+      }
+    }
+  );
+};
+
+module.exports.getProductEnquiryById = (req, res) => {
+  const garage_id = req.body.gID;
+
+  pool.query(
+    "select products_enquires.id,company,car_name,garage_name,category_name,products_enquires.state,products_enquires.price from products_enquires LEFT JOIN companies ON products_enquires.company_id = companies.id LEFT JOIN cars ON products_enquires.car_id = cars.id LEFT JOIN garages ON products_enquires.garage_id = garages.id LEFT JOIN categories ON products_enquires.category_id = categories.id where products_enquires.garage_id = ?",
+    [garage_id],
+    (err, results) => {
+      if (err) {
+        console.log(err);
+        res.json({ success: false });
+      } else {
+        res.json({ success: true, data: results });
       }
     }
   );
