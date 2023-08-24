@@ -155,6 +155,29 @@ const listProductInventory = async (req, res) => {
   });
 };
 
+const listProductEnquiry = async (req, res) => {
+  const query = `
+  SELECT pe.id, c.company, ca.category_name, car.car_name, ga.garage_name, pe.state, pe.price
+FROM products_enquires pe
+LEFT JOIN categories ca ON pe.category_id = ca.id
+LEFT JOIN companies c ON pe.company_id = c.id
+LEFT JOIN cars car ON pe.car_id = car.id
+LEFT JOIN garages ga ON pe.garage_id = ga.id;
+
+`;
+  pool.query(query, (err, results) => {
+    if (err) {
+      console.error(err);
+      res.sendStatus(500);
+    } else {
+      // Render the manage users template with the user data
+      const added = req.query.added === "1";
+      
+      res.render("manageProductEnquiryPage", { products: results, added });
+    }
+  });
+};
+
 const addProductPage = async (req, res) => {
   try {
     pool.query(`SELECT * FROM categories`, (err, results) => {
@@ -319,5 +342,6 @@ module.exports = {
   addProductInventoryPage,
   addProductInventory,
   listProductInventory,
+  listProductEnquiry
 };
 

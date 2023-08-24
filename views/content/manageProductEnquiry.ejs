@@ -15,11 +15,12 @@
               <thead class="text-capitalize">
                 <tr>
                   <th>ID</th>
+                  <th>Category Name</th>
                   <th>Company Name</th>
                   <th>Car Name</th>
-                  <th>Subadmin Name</th>
-                  <th>Inventory</th>
-                  <th>Date|Time</th>
+                  <th>Garage Name</th>
+                  <th>State</th>
+                  <th>Price</th>
                   <th></th>
                 </tr>
               </thead>
@@ -27,11 +28,12 @@
                 <% products.forEach((row) => { %>
                 <tr>
                   <td><%= row.id %></td>
+                  <td><%= row.category_name %></td>
                   <td><%= row.company %></td>
                   <td><%= row.car_name %></td>
-                  <td><%= row.name %></td>
-                  <td><%= row.inventory %></td>
-                  <td><%= row.date %></td>
+                  <td><%= row.garage_name %></td>
+                  <td><%= row.state %></td>
+                  <td><%= row.price %></td>
                   <td></td>
                 </tr>
 

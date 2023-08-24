@@ -12,6 +12,7 @@ const {
   getCarsByCompanyId,
   addProductInventoryPage,
   addProductInventory,
+  listProductEnquiry,
   listProductInventory
 } = require("../controllers/productsAPI");
 
@@ -20,6 +21,7 @@ router.route("/edit").put(editProduct);
 router.route("/delete/:id").delete(deleteProduct);
 router.route("/list").get(listProduct);
 router.route("/inventory/list").get(listProductInventory);
+router.route("/enquiry/list").get(listProductEnquiry);
 router.route("/add").get(addProductPage);
 router.route("/edit/page/:id").get(editProductPage);
 router.route("/add-inventory/:categoryName/:companyName/:carName").get(addProductInventoryPage);

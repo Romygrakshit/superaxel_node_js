@@ -37,6 +37,7 @@ router.post("/api/loginSubAdmin", garageAPI.loginSubAdmin);
 router.post("/api/cars", garageAPI.getCars);
 router.post("/api/price", garageAPI.getPrice);
 router.post("/api/productprice", garageAPI.getProductPrice);
+router.post("/api/getProductEnquryById", garageAPI.getProductEnquiryById);
 
 module.exports = router;
 

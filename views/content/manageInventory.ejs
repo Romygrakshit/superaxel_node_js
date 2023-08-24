@@ -40,6 +40,7 @@
                   <th>Left Axel Inventory</th>
                   <th>Left Axel Price</th>
                   <th>Right Axel Inventory</th>
+                  <th>Delete Inventory</th>
                   <th>Change Inventory</th>
                   <th>Date|Time</th>
                   <th></th>
@@ -55,7 +56,53 @@
                   <td><%= row.left_axel_inventory %></td>
                   <td><%= row.right_axel_price %></td>
                   <td><%= row.right_axel_inventory %></td>
-                  
+                  <td>
+                    <button
+                      type="button"
+                      class="btn btn-danger mt-3"
+                      data-toggle="modal"
+                      data-target="#exampleModalLong-<%= row.in_id %>"
+                    >
+                      Delete User
+                    </button>
+
+                    <div class="modal fade" id="exampleModalLong-<%= row.in_id %>">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title">Delete Inventory</h5>
+                            <button
+                              type="button"
+                              class="close"
+                              data-dismiss="modal"
+                            >
+                              <span>&times;</span>
+                            </button>
+                          </div>
+                          <form
+                            action="delete/<%= row.in_id %>?_method=PUT"
+                            method="post"
+                          >
+                            <div class="modal-body">
+                              <h6>Do you want to delete the inventory?</h6>
+                            </div>
+                            <div class="modal-footer">
+                              <button
+                                type="button"
+                                class="btn btn-secondary"
+                                data-dismiss="modal"
+                              >
+                                Close
+                              </button>
+                              <button type="submit" class="btn btn-danger">
+                                Save changes
+                              </button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
                   <td>
                     <button
                       type="button"
