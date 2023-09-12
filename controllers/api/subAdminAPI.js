@@ -91,7 +91,7 @@ module.exports.getProductEnquiryByState = (req, res) => {
       } else {
         const state = results[0].state;
         pool.query(
-          "select products_enquires.id,company,car_name,garage_name, garages.mobile_number, category_name,products_enquires.state,products_enquires.price, url AS garage_image from products_enquires LEFT JOIN companies ON products_enquires.company_id = companies.id LEFT JOIN cars ON products_enquires.car_id = cars.id LEFT JOIN garages ON products_enquires.garage_id = garages.id LEFT JOIN categories ON products_enquires.category_id = categories.id LEFT JOIN images ON garages.profile_image_id = images.id where products_enquires.state = ?",
+          "select products_enquires.id,company,car_name,garage_name, garages.mobile_number, category_name,products_enquires.state,products_enquires.price, url AS garage_image, garages.lat, garages.lng, garages.address from products_enquires LEFT JOIN companies ON products_enquires.company_id = companies.id LEFT JOIN cars ON products_enquires.car_id = cars.id LEFT JOIN garages ON products_enquires.garage_id = garages.id LEFT JOIN categories ON products_enquires.category_id = categories.id LEFT JOIN images ON garages.profile_image_id = images.id where products_enquires.state = ?",
           [state],
           (req, results) => {
             res.json({ success: true, data: results });
