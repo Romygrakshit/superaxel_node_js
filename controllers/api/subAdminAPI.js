@@ -58,7 +58,7 @@ module.exports.getEnquiryByState = (req, res) => {
         } else {
           const state = results[0].state;
           pool.query(
-            "select enquires.*, garage_name, mobile_number, enquires.address, url from enquires LEFT JOIN images ON enquires.images_id = images.id LEFT JOIN garages ON garage_id = garages.id where enquires.state = ?",
+            "SELECT enquires.id, enquires.address, enquires.lat, enquires.lng, enquires.company_id, enquires.car_id, company, car_name, garage_name, mobile_number, axel, offered_price, date_time, status, enquires.state, url as garage_image FROM enquires LEFT JOIN garages ON garage_id = garages.id LEFT JOIN images ON garages.profile_image_id = images.id LEFT JOIN companies ON enquires.company_id = companies.id LEFT JOIN cars ON enquires.car_id = cars.id WHERE enquires.state = ? GROUP BY enquires.id;",
             [state],
             (err, results) => {
               if(err){
@@ -91,7 +91,7 @@ module.exports.getProductEnquiryByState = (req, res) => {
       } else {
         const state = results[0].state;
         pool.query(
-          "select products_enquires.*,company,car_name,garage_name, garages.mobile_number, category_name,products_enquires.state,products_enquires.price, url AS garage_image from products_enquires LEFT JOIN companies ON products_enquires.company_id = companies.id LEFT JOIN cars ON products_enquires.car_id = cars.id LEFT JOIN garages ON products_enquires.garage_id = garages.id LEFT JOIN categories ON products_enquires.category_id = categories.id LEFT JOIN images ON garages.profile_image_id = images.id where products_enquires.state = ?",
+          "select products_enquires.id,company,car_name,garage_name, garages.mobile_number, category_name,products_enquires.state,products_enquires.price, url AS garage_image from products_enquires LEFT JOIN companies ON products_enquires.company_id = companies.id LEFT JOIN cars ON products_enquires.car_id = cars.id LEFT JOIN garages ON products_enquires.garage_id = garages.id LEFT JOIN categories ON products_enquires.category_id = categories.id LEFT JOIN images ON garages.profile_image_id = images.id where products_enquires.state = ?",
           [state],
           (req, results) => {
             res.json({ success: true, data: results });
