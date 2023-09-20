@@ -22,6 +22,19 @@
                 </div>
                 <div class="form-group">
                   <label for="example-text-input" class="col-form-label"
+                    >Garage Mobile Number</label
+                  >
+                  <input
+                    class="form-control"
+                    type="text"
+                    placeholder="Mobile Number"
+                    name="mobile_number"
+                    value="<%= results[0].mobile_number %>"
+                    id="example-text-input"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="example-text-input" class="col-form-label"
                     >Address</label
                   >
                   <input
@@ -96,6 +109,15 @@
                   />
                 </div>
                 <div class="form-group">
+                  <label for="SelectStatus" class="col-form-label"
+                    >Enquiry Status</label
+                  >
+                  <select name="status" id="SelectStatus" class="form-control">
+                    <option value="pending">pending</option>
+                    <option value="success">success</option>
+                  </select>
+                </div>
+                <div class="form-group">
                   <label for="example-text-input" class="col-form-label"
                     >Offered Price</label
                   >
@@ -109,6 +131,7 @@
                   />
                 </div>
                 <input type="hidden" name="id" value="<%= results[0].id %>" />
+                <input type="hidden" name="gid" value="<%= results[0].gid %>" />
                 <button class="btn btn-primary mb-3">Update Enquiry</button>
               </form>
             </div>
