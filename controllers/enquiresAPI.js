@@ -195,7 +195,7 @@ const editEnquiryPage = async (req, res) => {
   const id = req.params.id;
   
   pool.query(
-    `SELECT e.id, c.company, car.car_name, g.garage_name, e.address, e.lat, e.lng, e.axel, e.offered_price, e.images_id, images.url
+    `SELECT e.id, c.company, e.status, g.id AS gid, car.car_name, g.garage_name, g.mobile_number e.address, e.lat, e.lng, e.axel, e.offered_price, e.images_id, images.url
     FROM enquires e
     LEFT JOIN companies c ON e.company_id = c.id
     LEFT JOIN cars car ON e.car_id = car.id
@@ -284,20 +284,30 @@ const addEnquiryPage = async (req, res) => {
 };
 
 const updateEnquiry = async (req, res, next) => {
-  const { garage_name, address, state, company_id, car_id,  axel,lat,lng,offered_price, id } = req.body;
+  const { garage_name, mobile_number, address, state, company_id, car_id,  axel, status,lat,lng,offered_price, id, gid } = req.body;
   // console.log(req.body)
 
   // Render the editSubAdminPage.ejs with SubAdmin data
   pool.query(
-    "UPDATE enquires SET address = ?, state = ?, company_id = ?, car_id = ?, axel=?, lat=?, lng=?, offered_price = ? WHERE id = ?",
-    [ address, state, company_id, car_id,  axel,lat,lng,offered_price, id],
+    "UPDATE enquires SET address = ?, state = ?, company_id = ?, car_id = ?, axel=?, status=? lat=?, lng=?, offered_price = ? WHERE id = ?",
+    [ address, state, company_id, car_id,  axel,status,lat,lng,offered_price, id],
     (err, results) => {
       if (err) {
         console.error(err);
         res.sendStatus(500);
       } else {
         // console.log("result of enquiry", results);
-        res.redirect("/enquires/list");
+        pool.query(
+          "UPDATE garages SET garage_name=?,mobile_number=? WHERE id=?",
+          [garage_name,mobile_number,gid],
+          (err, results) => {
+            if (err) {
+              console.error(err);
+              res.sendStatus(500);
+            } else {
+              res.redirect("/enquires/list");
+            }}
+        )       
       }
     }
   );
