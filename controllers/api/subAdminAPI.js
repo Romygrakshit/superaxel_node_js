@@ -58,7 +58,7 @@ module.exports.getEnquiryByState = (req, res) => {
         } else {
           const state = results[0].state;
           pool.query(
-            "SELECT enquires.id, enquires.address, enquires.lat, enquires.lng, enquires.company_id, enquires.car_id, company, car_name, garage_name, mobile_number, axel, offered_price, date_time, status, enquires.state, url as garage_image FROM enquires LEFT JOIN garages ON garage_id = garages.id LEFT JOIN images ON garages.profile_image_id = images.id LEFT JOIN companies ON enquires.company_id = companies.id LEFT JOIN cars ON enquires.car_id = cars.id WHERE enquires.state = ? GROUP BY enquires.id;",
+            "SELECT enquires.id, enquires.address, enquires.lat, enquires.lng, enquires.company_id, enquires.car_id, company, car_name, garage_name, mobile_number, axel, offered_price, date_time, status, enquires.state, garages.url AS garage_image, -- Added alias for garages.urlGROUP_CONCAT(images.url) AS image_urls FROM enquires LEFT JOIN images ON FIND_IN_SET(images.id, REPLACE(enquires.images_id, '-', ',')) > 0 LEFT JOIN garages ON garage_id = garages.id LEFT JOIN images AS garage_images ON garages.profile_image_id = garage_images.id -- Added alias for imagesLEFT JOIN companies ON enquires.company_id = companies.id LEFT JOIN cars ON enquires.car_id = cars.id WHERE enquires.state = ? GROUP BY enquires.id;",
             [state],
             (err, results) => {
               if(err){
