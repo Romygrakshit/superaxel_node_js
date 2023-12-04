@@ -8,11 +8,12 @@ const jwt = require("jsonwebtoken");
 // Create MySQL connection pool
 const pool = mysql.createPool({
   connectionLimit: 10,
-  host: "127.0.0.1",
+  host: "localhost",
   user: "root",
   password: "",
   database: "superaxel",
 });
+
 
 module.exports.createInventory = (req, res) => {
   const {
@@ -58,13 +59,13 @@ module.exports.getEnquiryByState = (req, res) => {
         } else {
           const state = results[0].state;
           pool.query(
-            "SELECT enquires.id,enquires.address,enquires.lat,enquires.lng,enquires.company_id,enquires.car_id,companies.company,cars.car_name,garages.garage_name,garages.mobile_number,enquires.axel,enquires.offered_price,enquires.date_time,enquires.status,enquires.state,images2.url as garage_image,GROUP_CONCAT(images1.url) AS image_urls FROM enquires LEFT JOIN images AS images1 ON FIND_IN_SET(images1.id, REPLACE(enquires.images_id, '-', ',')) > 0 LEFT JOIN garages ON garage_id = garages.id LEFT JOIN images AS images2 ON garages.profile_image_id = images2.id LEFT JOIN companies ON enquires.company_id = companies.id LEFT JOIN cars ON enquires.car_id = cars.id WHERE enquires.state = ? GROUP BY enquires.id; ",
+            "SELECT enquires.id,enquires.address,enquires.lat,enquires.lng,enquires.company_id,enquires.car_id,companies.company,cars.car_name,garages.garage_name,garages.mobile_number,enquires.axel,enquires.offered_price,enquires.date_time,enquires.status,enquires.state,images2.url as garage_image,GROUP_CONCAT(images1.url) AS image_urls FROM enquires LEFT JOIN images AS images1 ON FIND_IN_SET(images1.id, REPLACE(enquires.images_id, '-', ',')) > 0 LEFT JOIN garages ON garage_id = garages.id LEFT JOIN images AS images2 ON garages.profile_image_id = images2.id LEFT JOIN companies ON enquires.company_id = companies.id LEFT JOIN cars ON enquires.car_id = cars.id WHERE enquires.state = ? GROUP BY enquires.id;",
             [state],
             (err, results) => {
-              if(err){
+              if (err) {
                 console.log(err)
                 res.json({ success: false });
-              }else{
+              } else {
                 res.json({ success: true, data: results });
               }
             }

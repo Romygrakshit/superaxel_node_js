@@ -2,11 +2,12 @@ const mysql = require("mysql");
 // Create MySQL connection pool
 const pool = mysql.createPool({
   connectionLimit: 10,
-  host: "127.0.0.1",
+  host: "localhost",
   user: "root",
   password: "",
   database: "superaxel",
 });
+
 // create category in database
 const createCategory = async (req, res) => {
   const { category_name } = req.body;
@@ -67,7 +68,7 @@ const listCategory = async (req, res) => {
     } else {
       // Render the manageusers.hbs template with the user data
       const added = req.query.added === '1';
-      res.render("manageCategoriesPage", { categories: results ,added});
+      res.render("manageCategoriesPage", { categories: results, added });
     }
   });
 };
@@ -76,7 +77,7 @@ const addCategoryPage = async (req, res) => {
 };
 const editCategoryPage = async (req, res) => {
   const id = req.params.id;
-  pool.query(`SELECT * FROM categories WHERE id = ?`,[id], (err, results) => {
+  pool.query(`SELECT * FROM categories WHERE id = ?`, [id], (err, results) => {
     if (err) {
       console.error(err);
       res.sendStatus(500);

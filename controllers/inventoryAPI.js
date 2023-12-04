@@ -3,11 +3,12 @@ const mysql = require("mysql");
 // Create MySQL connection pool
 const pool = mysql.createPool({
   connectionLimit: 10,
-  host: "127.0.0.1",
+  host: "localhost",
   user: "root",
   password: "",
-  database: "superaxel"
+  database: "superaxel",
 });
+
 
 
 const newInventory = async (req, res) => {
@@ -42,7 +43,7 @@ const newInventory = async (req, res) => {
               return;
             }
             const subadmin_id = results[0].id;
-            insertData(car_id, left_axel_price, 
+            insertData(car_id, left_axel_price,
               left_axel_inventory, right_axel_price, right_axel_inventory, subadmin_id, res);
           }
         });
@@ -55,7 +56,7 @@ const newInventory = async (req, res) => {
 };
 
 const insertData = async (car_id,
-   left_axel_price, left_axel_inventory, right_axel_price, right_axel_inventory, subadmin_id, res) => {
+  left_axel_price, left_axel_inventory, right_axel_price, right_axel_inventory, subadmin_id, res) => {
   pool.query("INSERT INTO inventory SET ?", {
     car_id,
     left_axel_price,
@@ -89,7 +90,7 @@ const addInventoryPage = async (req, res) => {
           } else {
             const subadmins = results;
             // Render the editSubAdminPage.ejs with SubAdmin data
-            res.render("addInventoryPage.ejs", {company, subadmins});
+            res.render("addInventoryPage.ejs", { company, subadmins });
           }
         });
       }
@@ -135,7 +136,7 @@ const editInventoryPage = async (req, res) => {
   // );
 };
 const changeInventory = async (req, res) => {
-  const {id, inventory, stock, type} = req.body;
+  const { id, inventory, stock, type } = req.body;
   let query;
   if (inventory == "Left Axel") {
     query = "UPDATE inventory SET left_axel_inventory = left_axel_inventory + ? WHERE id = ?";
@@ -152,19 +153,20 @@ const changeInventory = async (req, res) => {
       console.error(err);
       res.sendStatus(500);
     } else {
-      pool.query("SELECT subadmin_id FROM inventory WHERE id= ?",[id],
-      (err,results) => {
-        if (err){
-          console.error(err)
-          res.sendStatus(500);
-      }else{
-        // console.log(results[0])
-        const subadmin_id = results[0].subadmin_id;
-        res.redirect(`/inventory/list/${subadmin_id}?_method=PUT`);
+      pool.query("SELECT subadmin_id FROM inventory WHERE id= ?", [id],
+        (err, results) => {
+          if (err) {
+            console.error(err)
+            res.sendStatus(500);
+          } else {
+            // console.log(results[0])
+            const subadmin_id = results[0].subadmin_id;
+            res.redirect(`/inventory/list/${subadmin_id}?_method=PUT`);
 
-      }}
+          }
+        }
       )
-     
+
     }
   });
 };
@@ -209,7 +211,7 @@ const deleteInventory = async (req, res) => {
 
 // Manage Inventory Page
 const listInventoryAdmin = async (req, res) => {
-  let {Id} = req.body;
+  let { Id } = req.body;
   // console.log("Body:", req.body);
 
   if (Id == undefined) {
@@ -217,7 +219,7 @@ const listInventoryAdmin = async (req, res) => {
     Id = req.params.id;
   }
   if (Id == undefined) {
-    Id = 1;
+    Id = 27;
   }
   // console.log('id==>'+Id);
   // Fetch data from the "subadmins" table

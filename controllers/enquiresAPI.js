@@ -7,11 +7,12 @@ const saltRounds = 10;
 // Create MySQL connection pool
 const pool = mysql.createPool({
   connectionLimit: 10,
-  host: "127.0.0.1",
+  host: "localhost",
   user: "root",
   password: "",
   database: "superaxel",
 });
+
 
 // const postBannerImage = async (req, res) => {};
 
@@ -193,7 +194,7 @@ const listEnquires = async (req, res) => {
 
 const editEnquiryPage = async (req, res) => {
   const id = req.params.id;
-  
+
   pool.query(
     `SELECT e.id,c.company, e.status, g.id AS gid, car.car_name, g.garage_name, g.mobile_number, e.address, e.lat, e.lng, e.axel, offered_price, e.images_id, images.url FROM enquires e LEFT JOIN companies c ON e.company_id = c.id LEFT JOIN cars car ON e.car_id = car.id LEFT JOIN garages g ON e.garage_id = g.id LEFT JOIN images ON e.images_id = images.id WHERE e.id =${id}`,
     (err, results) => {
@@ -203,24 +204,24 @@ const editEnquiryPage = async (req, res) => {
       } else {
         const enquiry = results;
         pool.query('SELECT * FROM companies',
-        (err,results)=>{
-          if(err){
-            console.error(err);
-            res.sendStatus(500);
-          }else{
-            const company = results;
-            pool.query('SELECT * FROM states',(err,results)=>{
-              if(err){
-                console.error(err);
-                res.sendStatus(500);
-              }else{
-                const states=results;
-                res.render("editEnquiryPage.ejs", { results:enquiry, company, states});
-              }
-            })
-            
+          (err, results) => {
+            if (err) {
+              console.error(err);
+              res.sendStatus(500);
+            } else {
+              const company = results;
+              pool.query('SELECT * FROM states', (err, results) => {
+                if (err) {
+                  console.error(err);
+                  res.sendStatus(500);
+                } else {
+                  const states = results;
+                  res.render("editEnquiryPage.ejs", { results: enquiry, company, states });
+                }
+              })
+
+            }
           }
-        }
         )
         // Render the manageusers.hbs template with the user data
       }
@@ -278,58 +279,60 @@ const addEnquiryPage = async (req, res) => {
 };
 
 const updateEnquiry = async (req, res, next) => {
-  const { garage_name, mobile_number, address, state, company_id, car_id,  axel, status,lat,lng,offered_price, id, gid } = req.body;
+  const { mobile_number, address, state, company_id, car_id, axel, status, lat, lng, offered_price, id, gid } = req.body;
   // console.log(req.body)
   const companyId = parseInt(company_id);
   const carId = parseInt(car_id);
 
   if (isNaN(companyId) || isNaN(carId)) {
-    pool.query("SELECT id FROM companies WHERE company= ?",[company_id],
-  (err,result)=>{
-    if (err) {
-      console.error(err);
-      res.sendStatus(500);
-    } else {
-      const company_id = result[0].id;
-      pool.query("SELECT id FROM cars WHERE car_name=?",[car_id],
-      (err,result)=>{
+    pool.query("SELECT id FROM companies WHERE company= ?", [company_id],
+      (err, result) => {
         if (err) {
           console.error(err);
           res.sendStatus(500);
         } else {
-          const car_id = result[0].id;
-          pool.query(
-            "UPDATE enquires SET address = ?, state = ?, company_id = ?, car_id = ?, axel=?, status=? ,lat=?, lng=?, offered_price = ? WHERE id = ?",
-            [ address, state, company_id, car_id,  axel,status,lat,lng,offered_price, id],
-            (err, results) => {
+          const company_id = result[0].id;
+          pool.query("SELECT id FROM cars WHERE car_name=?", [car_id],
+            (err, result) => {
               if (err) {
                 console.error(err);
                 res.sendStatus(500);
               } else {
-                // console.log("result of enquiry", results);
+                const car_id = result[0].id;
                 pool.query(
-                  "UPDATE garages SET garage_name=?,mobile_number=? WHERE id=?",
-                  [garage_name,mobile_number,gid],
+                  "UPDATE enquires SET address = ?, state = ?, company_id = ?, car_id = ?, axel=?, status=? ,lat=?, lng=?, offered_price = ? WHERE id = ?",
+                  [address, state, company_id, car_id, axel, status, lat, lng, offered_price, id],
                   (err, results) => {
                     if (err) {
                       console.error(err);
                       res.sendStatus(500);
                     } else {
-                      res.redirect("/enquires/list");
-                    }}
-                )       
+                      // console.log("result of enquiry", results);
+                      pool.query(
+                        "UPDATE garages SET mobile_number=? WHERE id=?",
+                        [mobile_number, gid],
+                        (err, results) => {
+                          if (err) {
+                            console.error(err);
+                            res.sendStatus(500);
+                          } else {
+                            res.redirect("/enquires/list");
+                          }
+                        }
+                      )
+                    }
+                  }
+                );
               }
-            }
-          );
-        }})
-         }
-       })
-      //  console.log('company_id and car_id are strings:', company_id, car_id);
-     }
-   else{
+            })
+        }
+      })
+    //  console.log('company_id and car_id are strings:', company_id, car_id);
+  }
+  else {
     pool.query(
       "UPDATE enquires SET address = ?, state = ?, company_id = ?, car_id = ?, axel=?, status=? ,lat=?, lng=?, offered_price = ? WHERE id = ?",
-      [ address, state, company_id, car_id,  axel,status,lat,lng,offered_price, id],
+      [address, state, company_id, car_id, axel, status, lat, lng, offered_price, id],
       (err, results) => {
         if (err) {
           console.error(err);
@@ -338,15 +341,16 @@ const updateEnquiry = async (req, res, next) => {
           // console.log("result of enquiry", results);
           pool.query(
             "UPDATE garages SET garage_name=?,mobile_number=? WHERE id=?",
-            [garage_name,mobile_number,gid],
+            [garage_name, mobile_number, gid],
             (err, results) => {
               if (err) {
                 console.error(err);
                 res.sendStatus(500);
               } else {
                 res.redirect("/enquires/list");
-              }}
-          )       
+              }
+            }
+          )
         }
       }
     );

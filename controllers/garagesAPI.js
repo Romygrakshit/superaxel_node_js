@@ -7,11 +7,12 @@ const saltRounds = 10;
 // Create MySQL connection pool
 const pool = mysql.createPool({
   connectionLimit: 10,
-  host: "127.0.0.1",
+  host: "localhost",
   user: "root",
   password: "",
   database: "superaxel",
 });
+
 
 // const postBannerImage = async (req, res) => {};
 
@@ -63,22 +64,22 @@ const registerGarages = async (req, res, next) => {
             console.error(err);
             res.sendStatus(500);
           } else {
-            pool.query("SELECT * FROM states WHERE states.id = ?",[state],
-            (err,results)=>{
-              const state_name = results[0].state;
-              insertData(
-                garage_name,
-                state_name,
-                city,
-                address,
-                profileUrl,
-                mobile_number,
-                lat,
-                lng,
-                password,
-                res
-              );
-            }
+            pool.query("SELECT * FROM states WHERE states.id = ?", [state],
+              (err, results) => {
+                const state_name = results[0].state;
+                insertData(
+                  garage_name,
+                  state_name,
+                  city,
+                  address,
+                  profileUrl,
+                  mobile_number,
+                  lat,
+                  lng,
+                  password,
+                  res
+                );
+              }
             )
           }
         }
@@ -122,7 +123,7 @@ const insertData = async (
               "INSERT INTO garages SET ?",
               {
                 garage_name,
-                state:state_name,
+                state: state_name,
                 city,
                 address,
                 profile_image_id,
@@ -151,29 +152,29 @@ const insertData = async (
 const editGaragesData = async (req, res) => {
   const { garage_name, address, state, city, mobile_number, lat, lng, id } =
     req.body;
-  pool.query("SELECT * FROM states WHERE states.id = ?",[state],
-  (err,results)=>{
-    if (err) {
-      console.error(err);
-      res.sendStatus(500);
-    } else {
-      // console.log(results);
-      const state_name = results[0].state;
-      // console.log(state_name);
-      pool.query(
-        "UPDATE garages SET garage_name = ?, address = ?, state =?, city = ?, mobile_number = ?, lat = ?, lng =? WHERE id = ?",
-        [garage_name, address, state_name, city, mobile_number, lat, lng, id],
-        (err, results) => {
-          if (err) {
-            console.error(err);
-            res.sendStatus(500);
-          } else {
-            res.redirect("/garages/list");
+  pool.query("SELECT * FROM states WHERE states.id = ?", [state],
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        res.sendStatus(500);
+      } else {
+        // console.log(results);
+        const state_name = results[0].state;
+        // console.log(state_name);
+        pool.query(
+          "UPDATE garages SET garage_name = ?, address = ?, state =?, city = ?, mobile_number = ?, lat = ?, lng =? WHERE id = ?",
+          [garage_name, address, state_name, city, mobile_number, lat, lng, id],
+          (err, results) => {
+            if (err) {
+              console.error(err);
+              res.sendStatus(500);
+            } else {
+              res.redirect("/garages/list");
+            }
           }
-        }
-      );
+        );
+      }
     }
-  }
   );
 };
 
@@ -302,29 +303,29 @@ const deleteImage = (req, res, next) => {
 // uploadPath = path.join(__dirname, "../public/img/garage/gallery");
 // Garages List
 const addGaragePage = async (req, res) => {
-  try{
-  pool.query(`SELECT * FROM states`, (err, results) => {
-    if (err) {
-      console.error(err);
-      res.sendStatus(500);
-    } else {
-      const states = results;
-      pool.query('SELECT * FROM cities', (err,results)=>{
-        if(err){
-          console.error(err);
-          res.sendStatus(500);
-        }else{
-          const cities = results;
-          res.render("addGaragePage.ejs", { states , cities});
-        }
-     });      
-    }
-  });
-}catch (err) {
-  // handle error
-  res.sendStatus(500);
-  console.log("error paji");
-}
+  try {
+    pool.query(`SELECT * FROM states`, (err, results) => {
+      if (err) {
+        console.error(err);
+        res.sendStatus(500);
+      } else {
+        const states = results;
+        pool.query('SELECT * FROM cities', (err, results) => {
+          if (err) {
+            console.error(err);
+            res.sendStatus(500);
+          } else {
+            const cities = results;
+            res.render("addGaragePage.ejs", { states, cities });
+          }
+        });
+      }
+    });
+  } catch (err) {
+    // handle error
+    res.sendStatus(500);
+    console.log("error paji");
+  }
 };
 
 const getCitiesByStateId = (req, res) => {
@@ -353,20 +354,21 @@ const updateGaragePassword = async (req, res, next) => {
       console.error(err);
       res.sendStatus(500);
     } else {
-  pool.query(
-    "UPDATE garages SET password = ? WHERE id = ?",
-    [hash, id],
-    (err, results) => {
-      if (err) {
-        console.error(err);
-        res.sendStatus(500);
-      } else {
-        res.redirect("/garages/list");
-      }
+      pool.query(
+        "UPDATE garages SET password = ? WHERE id = ?",
+        [hash, id],
+        (err, results) => {
+          if (err) {
+            console.error(err);
+            res.sendStatus(500);
+          } else {
+            res.redirect("/garages/list");
+          }
+        }
+      );
     }
+  }
   );
-}}
-);
 };
 
 module.exports = {

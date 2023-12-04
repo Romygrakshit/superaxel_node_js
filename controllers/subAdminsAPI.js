@@ -5,11 +5,12 @@ const { check, validationResult } = require("express-validator");
 // Create MySQL connection pool
 const pool = mysql.createPool({
   connectionLimit: 10,
-  host: "127.0.0.1",
+  host: "localhost",
   user: "root",
   password: "",
   database: "superaxel",
 });
+
 
 const validateInputs = [
   check("name").notEmpty().withMessage("Name is required"),
@@ -41,37 +42,37 @@ const registerSubAdmins = async (req, res) => {
     } else {
       // Add garage to database
       pool.query(
-        'SELECT * FROM states WHERE states.id = ?',[state_id],
-        (err,results)=>{
+        'SELECT * FROM states WHERE states.id = ?', [state_id],
+        (err, results) => {
           if (err) {
             console.error(err);
             res.sendStatus(500);
           } else {
-          const state = results[0].state;
-          pool.query(
-            "INSERT INTO subadmins SET ?",
-            {
-              name,
-              mobile_number,
-              state,
-              city,
-              password: hash,
-            },
-            (err, results) => {
-              if (err) {
-                console.error(err);
-                res.sendStatus(500);
-              } else {
-                // Redirect back to the manage garage list
-    
-                res.redirect("/subadmins/list?added=1");
+            const state = results[0].state;
+            pool.query(
+              "INSERT INTO subadmins SET ?",
+              {
+                name,
+                mobile_number,
+                state,
+                city,
+                password: hash,
+              },
+              (err, results) => {
+                if (err) {
+                  console.error(err);
+                  res.sendStatus(500);
+                } else {
+                  // Redirect back to the manage garage list
+
+                  res.redirect("/subadmins/list?added=1");
+                }
               }
-            }
-          );
+            );
           }
         }
       )
-      
+
     }
   });
 };
@@ -88,11 +89,11 @@ const addSubAdminsPage = async (req, res) => {
       res.render("addSubAdminPage", { states });
     }
   });
-  
+
 };
 
-const updatePassword = async (req,res) =>{
-  const {id, password} = req.body;
+const updatePassword = async (req, res) => {
+  const { id, password } = req.body;
   bcrypt.hash(password, saltRounds, (err, hash) => {
     if (err) {
       console.error(err);
@@ -108,7 +109,7 @@ const updatePassword = async (req,res) =>{
             res.sendStatus(500);
           } else {
             // Redirect back to the manage garage list
-    
+
             res.redirect("/subadmins/list");
           }
         }
@@ -122,29 +123,29 @@ const editSubAdmins = async (req, res) => {
   const { id, name, mobile_number, state_id, city, password } = req.body;
   // Update garage to database
   pool.query(
-    "SELECT * FROM states WHERE states.id = ?",[state_id],
-    (err,results)=>{
+    "SELECT * FROM states WHERE states.id = ?", [state_id],
+    (err, results) => {
       if (err) {
         console.error(err);
         res.sendStatus(500);
       } else {
-      // console.log("hello there");
-      const state = results[0].state;
-      // console.log(state);
-      pool.query(
-        "UPDATE subadmins SET name = ?, mobile_number = ?, state = ?, city = ? WHERE id = ?",
-        [name, mobile_number, state, city, id],
-        (err, results) => {
-          if (err) {
-            console.error(err);
-            res.sendStatus(500);
-          } else {
-            // Redirect back to the manage garage list
-    
-            res.redirect("/subadmins/list");
+        // console.log("hello there");
+        const state = results[0].state;
+        // console.log(state);
+        pool.query(
+          "UPDATE subadmins SET name = ?, mobile_number = ?, state = ?, city = ? WHERE id = ?",
+          [name, mobile_number, state, city, id],
+          (err, results) => {
+            if (err) {
+              console.error(err);
+              res.sendStatus(500);
+            } else {
+              // Redirect back to the manage garage list
+
+              res.redirect("/subadmins/list");
+            }
           }
-        }
-      );
+        );
       }
     }
   )
@@ -217,7 +218,7 @@ const listSubAdmins = async (req, res) => {
     } else {
       // Render the manageSubAdminPage.ejs with SubAdmins data
       const added = req.query.added === '1';
-      res.render("manageSubAdminPage", { subadmins: results , added});
+      res.render("manageSubAdminPage", { subadmins: results, added });
     }
   });
 };

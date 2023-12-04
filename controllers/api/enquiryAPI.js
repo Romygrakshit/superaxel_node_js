@@ -7,11 +7,12 @@ const saltRounds = 10;
 // Create MySQL connection pool
 const pool = mysql.createPool({
   connectionLimit: 10,
-  host: "127.0.0.1",
+  host: "localhost",
   user: "root",
   password: "",
   database: "superaxel",
 });
+
 
 // const postBannerImage = async (req, res) => {};
 
@@ -71,7 +72,6 @@ module.exports.newProductEnquiry = async (req, res) => {
     car_id,
     price,
   } = req.body;
-  console.log(req.body)
   pool.query(
     "SELECT state FROM garages WHERE id = ?",
     [garage_id],
@@ -87,11 +87,11 @@ module.exports.newProductEnquiry = async (req, res) => {
         "INSERT INTO products_enquires SET ?",
         {
           category_id,
-        garage_id,
-        company_id,
-        car_id,
-        price,
-        state,
+          garage_id,
+          company_id,
+          car_id,
+          price,
+          state,
         },
         (err, results) => {
           if (err) {
@@ -100,7 +100,7 @@ module.exports.newProductEnquiry = async (req, res) => {
           } else {
             // console.log(results);
             // console.log("success");
-            res.status(404).json({ success: true ,data:results});
+            res.status(200).json({ success: true, data: results });
           }
         }
       );
@@ -158,13 +158,13 @@ module.exports.newEnquires = async (req, res, next) => {
                 // console.log(results);
                 if (err) {
                   console.error(err);
-                  // res.json({ success: false , err});
+                  res.json({ success: false, error: err });
                 } else {
                   const car_id = results[0].id;
-                  pool.query("SELECT * FROM garages WHERE id = ?",[garage_id],(err,results)=>{
+                  pool.query("SELECT * FROM garages WHERE id = ?", [garage_id], (err, results) => {
                     if (err) {
                       console.error(err);
-                      res.json({ success: false});
+                      res.json({ success: false, error: err });
                     } else {
                       const state = results[0].state;
                       insertData(
@@ -192,7 +192,7 @@ module.exports.newEnquires = async (req, res, next) => {
     });
   } catch (err) {
     console.log(err);
-    res.json({ success: false });
+    res.json({ success: false, error: err });
   }
 };
 
@@ -253,7 +253,7 @@ const insertData = async (
         (err, results) => {
           if (err) {
             console.error(err);
-            res.json({ success: false });
+            res.json({ success: false, error: err });
           } else {
             // console.log(results);
             // console.log("success");
@@ -264,6 +264,6 @@ const insertData = async (
     })
     .catch((err) => {
       console.error(err);
-      res.status(500).json({ success: false });
+      res.json({ success: false, error: err });
     });
 };

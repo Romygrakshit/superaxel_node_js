@@ -2,11 +2,12 @@ const mysql = require("mysql");
 // Create MySQL connection pool
 const pool = mysql.createPool({
   connectionLimit: 10,
-  host: "127.0.0.1",
+  host: "localhost",
   user: "root",
   password: "",
   database: "superaxel",
 });
+
 // create Company in database
 const createCompany = async (req, res) => {
   const { company } = req.body;

@@ -16,12 +16,11 @@ const {
 router.route("/register").post(newInventory);
 router.route("/add").get(addInventoryPage);
 router.route("/edit").put(editInventory);
-// router.route("/delete/:id").put(deleteInventory);
 router.route("/change").put(changeInventory);
 router.route("/list/:id").get(listInventoryAdmin);
-router.get("/get-cars/:companyId", getCarsByCompanyId);
 router.route("/edit/page/:id").get(editInventoryPage);
 router.route("/api/list/:id").get(garageApi.listInventorySubadmin);
+router.get("/get-cars/:companyId", getCarsByCompanyId);
 router.route("/list/delete/:id").put(deleteInventory);
 router.route("/list/sub").put(listInventoryAdmin);
 router.route("/list").get(listInventoryAdmin);

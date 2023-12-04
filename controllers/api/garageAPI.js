@@ -8,11 +8,12 @@ const jwt = require("jsonwebtoken");
 // Create MySQL connection pool
 const pool = mysql.createPool({
   connectionLimit: 10,
-  host: "127.0.0.1",
+  host: "localhost",
   user: "root",
   password: "",
   database: "superaxel",
 });
+
 
 // const postBannerImage = async (req, res) => {};
 
@@ -52,7 +53,7 @@ module.exports.register_garage = async (req, res, next) => {
         lat,
         lng,
         password,
-        
+
       } = req.body;
 
       const profileUrl =
@@ -140,7 +141,7 @@ const insertData = async (
                     [mobile_number],
                     (req, results) => {
                       // console.log("success");
-                      res.status(404).json({
+                      res.status(200).json({
                         success: true,
                         data: {
                           token: jwt.sign({ mobile_number }, "superaxel", {
@@ -167,8 +168,8 @@ module.exports.login_garage = async (req, res) => {
     pool.query(
       `select * from garages where mobile_number = ?`,
       [mobile_number],
-      async (err, results) => {  
-        if (err) {  
+      async (err, results) => {
+        if (err) {
           console.log(err);
           return res.json({ success: false, message: "Database error" });
         }
@@ -257,8 +258,8 @@ module.exports.loginSubAdmin = (req, res) => {
     pool.query(
       `select * from subadmins where mobile_number = ?`,
       [mobile_number],
-      async (err, results) => {  
-        if (err) {  
+      async (err, results) => {
+        if (err) {
           console.log(err);
           return res.json({ success: false, message: "Database error" });
         }
@@ -314,6 +315,7 @@ module.exports.getCars = async (req, res) => {
     res.json({ success: false });
   }
 };
+
 
 module.exports.getPrice = (req, res) => {
   try {
@@ -378,7 +380,7 @@ module.exports.getProductPrice = (req, res) => {
         const query = "SELECT products.id AS product_id, products.category_name, products.company_name, products.car_name, products.price, products_inventory.inventory, subadmins.state FROM products JOIN categories ON products.category_name = categories.category_name JOIN products_inventory ON categories.id = products_inventory.category_id JOIN subadmins ON products_inventory.subadmin_id = subadmins.id WHERE products_inventory.car_id = ? AND subadmins.state =? AND products_inventory.category_id = ?"
         pool.query(
           query,
-          [car, garageState,categoryID],
+          [car, garageState, categoryID],
           (error, inventoryResults) => {
             if (error) {
               console.log(error);
