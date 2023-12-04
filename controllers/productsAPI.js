@@ -2,11 +2,12 @@ const mysql = require("mysql");
 // Create MySQL connection pool
 const pool = mysql.createPool({
   connectionLimit: 10,
-  host: "127.0.0.1",
+  host: "localhost",
   user: "root",
   password: "",
   database: "superaxel",
 });
+
 // create category in database
 const createProduct = async (req, res) => {
   try {
@@ -47,30 +48,32 @@ const createProduct = async (req, res) => {
     res.sendStatus(500);
     console.log("error paji");
   }
- 
+
 };
 
-const insertProduct = async(category_name,
+const insertProduct = async (category_name,
   company_name,
   car_name,
-  price,res,)=> {pool.query(
-  "INSERT INTO products SET ?",
-  {
-    category_name,
-    company_name,
-    car_name,
-    price,
-  },
-  (err, results) => {
-    if (err) {
-      console.error(err);
-      res.sendStatus(500);
-    } else {
-      // console.log(results);
-      res.redirect("/products/list?added=1");
+  price, res,) => {
+  pool.query(
+    "INSERT INTO products SET ?",
+    {
+      category_name,
+      company_name,
+      car_name,
+      price,
+    },
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        res.sendStatus(500);
+      } else {
+        // console.log(results);
+        res.redirect("/products/list?added=1");
+      }
     }
-  }
-)};
+  )
+};
 const editProduct = async (req, res) => {
   const { company_id, car_name, price, id } = req.body;
 
@@ -149,7 +152,7 @@ const listProductInventory = async (req, res) => {
     } else {
       // Render the manage users template with the user data
       const added = req.query.added === "1";
-      
+
       res.render("manageProductInventoryPage", { products: results, added });
     }
   });
@@ -163,7 +166,6 @@ LEFT JOIN categories ca ON pe.category_id = ca.id
 LEFT JOIN companies c ON pe.company_id = c.id
 LEFT JOIN cars car ON pe.car_id = car.id
 LEFT JOIN garages ga ON pe.garage_id = ga.id;
-
 `;
   pool.query(query, (err, results) => {
     if (err) {
@@ -172,7 +174,7 @@ LEFT JOIN garages ga ON pe.garage_id = ga.id;
     } else {
       // Render the manage users template with the user data
       const added = req.query.added === "1";
-      
+
       res.render("manageProductEnquiryPage", { products: results, added });
     }
   });
@@ -223,20 +225,20 @@ const editProductPage = async (req, res) => {
       const category_name = results[0];
       pool.query(
         'SELECT * FROM companies',
-        (err,results) =>{
-          if(err){
+        (err, results) => {
+          if (err) {
             console.error(err);
             res.sendStatus(500);
-          }else{
+          } else {
             const company = results;
 
-            res.render("editProductsPage.ejs", {category_name, company});
+            res.render("editProductsPage.ejs", { category_name, company });
           }
         }
       )
       // Render the editProduct.ejs template with the product data
       // const category_name = results[0];
-      
+
     }
   });
 };
@@ -258,7 +260,7 @@ const getCarsByCompanyId = (req, res) => {
 };
 
 const addProductInventoryPage = async (req, res) => {
-  const { categoryName,companyName, carName } = req.params;
+  const { categoryName, companyName, carName } = req.params;
   // Pass the company_name and car_name to the addProductInventory.ejs template
   pool.query(
     "SELECT * FROM subadmins",
@@ -270,30 +272,29 @@ const addProductInventoryPage = async (req, res) => {
         const subadmin = results;
         pool.query(
           "SELECT * FROM companies WHERE company=?",
-          [companyName],(err,results)=>
-          {
-            if(err){
+          [companyName], (err, results) => {
+            if (err) {
               console.error(err);
               res.sendStatus(500);
-            }else{
+            } else {
               const company_id = results[0].id;
               pool.query(
                 "SELECT * FROM cars WHERE car_name=? AND company_id=?",
-                [carName,company_id],(err,results)=>
-                {
-                  if(err){
+                [carName, company_id], (err, results) => {
+                  if (err) {
                     console.error(err);
                     res.sendStatus(500);
-                  }else{
+                  } else {
                     const car_id = results[0].id;
                     pool.query("SELECT * FROM categories WHERE category_name = ?", [categoryName], (err, results) => {
-                      if(err){
+                      if (err) {
                         console.error(err);
                         res.sendStatus(500);
-                      }else{
+                      } else {
                         const category_id = results[0].id;
-                        res.render("addProductInventoryPage.ejs", {category_id, company_id, car_id , subadmin });
-                    }})
+                        res.render("addProductInventoryPage.ejs", { category_id, company_id, car_id, subadmin });
+                      }
+                    })
                   }
                 }
               )
@@ -303,11 +304,11 @@ const addProductInventoryPage = async (req, res) => {
       }
     }
   );
-  
+
 };
 
 const addProductInventory = async (req, res) => {
-  const {  category_id,company_id, car_id, subadmin_id, inventory } = req.body;
+  const { category_id, company_id, car_id, subadmin_id, inventory } = req.body;
 
   pool.query(
     "INSERT INTO products_inventory SET ?",

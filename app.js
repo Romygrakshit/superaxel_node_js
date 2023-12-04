@@ -50,7 +50,7 @@ const products_routes = require("./routes/productsRoutes")
 app.use("/companies", companies_routes);
 app.use("/cars", cars_routes);
 app.use("/subadmins", sub_admins);
-app.use("/products",products_routes);
+app.use("/products", products_routes);
 app.use("/categories", categories_routes);
 app.use("/garages", garages_routes);
 app.use("/enquires", enquires_routes);
@@ -63,7 +63,7 @@ app.get("/privacy", (req, res) => {
 // Route to show the login page
 app.get("/login", (req, res) => {
   const logout = req.query.logout === 'true';
-  res.render("login",{logout});
+  res.render("login", { logout });
 });
 
 // Route to handle login form submission
