@@ -24,6 +24,7 @@
                 <div class="form-group">
                   <label for="Select">Select Company:</label>
                   <select name="company_id" id="SelectCompany" class="form-control">
+                    <option value="Default"></option>
                     <% company.forEach((row) => { %>
                       <option value="<%= row.id %>"><%= row.company %></option>
                       <% }); %>
