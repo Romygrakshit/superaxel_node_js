@@ -299,64 +299,143 @@ const updateEnquiry = async (req, res, next) => {
                 res.sendStatus(500);
               } else {
                 const car_id = result[0].id;
-                pool.query(
-                  "UPDATE enquires SET address = ?, state = ?, company_id = ?, car_id = ?, axel=?, status=? ,lat=?, lng=?, offered_price = ? WHERE id = ?",
-                  [address, state, company_id, car_id, axel, status, lat, lng, offered_price, id],
-                  (err, results) => {
-                    if (err) {
-                      console.error(err);
-                      res.sendStatus(500);
-                    } else {
-                      // console.log("result of enquiry", results);
-                      pool.query(
-                        "UPDATE garages SET mobile_number=? WHERE id=?",
-                        [mobile_number, gid],
-                        (err, results) => {
-                          if (err) {
-                            console.error(err);
-                            res.sendStatus(500);
-                          } else {
-                            res.redirect("/enquires/list");
-                          }
-                        }
-                      )
-                    }
+                pool.query("SELECT status FROM enquires where id=?", [id], (err, results) => {
+                  if (err) {
+                    console.error(err);
+                    res.sendStatus(500);
                   }
-                );
+                  else {
+                    const old_status = results[0].status;
+                    pool.query(
+                      "UPDATE enquires SET address = ?, state = ?, company_id = ?, car_id = ?, axel=?, status=? ,lat=?, lng=?, offered_price = ? WHERE id = ?",
+                      [address, state, company_id, car_id, axel, status, lat, lng, offered_price, id],
+                      (err, results) => {
+                        if (err) {
+                          console.error(err);
+                          res.sendStatus(500);
+                        } else {
+                          // console.log("result of enquiry", results);
+                          pool.query(
+                            "UPDATE garages SET mobile_number=? WHERE id=?",
+                            [mobile_number, gid],
+                            (err, results) => {
+                              if (err) {
+                                console.error(err);
+                                res.sendStatus(500);
+                              } else {
+                                pool.query("SELECT S.id FROM enquires E INNER JOIN garages G ON E.garage_id = G.id INNER JOIN subadmins S ON G.state=S.state WHERE G.id=?", [gid], (err, rst) => {
+                                  if (err) {
+                                    console.error(err);
+                                    res.sendStatus(500);
+                                  } else {
+                                    const subadminId = rst[0].id;
+                                    if (status == 'delivered') {
+                                      updateInventory(subadminId, car_id, axel, 1);
+                                    }
+                                    else if (status == 'cancel' && old_status == 'delivered') {
+                                      updateInventory(subadminId, car_id, axel, 2);
+                                    }
+                                    res.redirect("/enquires/list");
+                                  }
+                                })
+                              }
+                            }
+                          )
+                        }
+                      }
+                    );
+                  }
+                })
               }
             })
         }
       })
-    //  console.log('company_id and car_id are strings:', company_id, car_id);
   }
   else {
-    pool.query(
-      "UPDATE enquires SET address = ?, state = ?, company_id = ?, car_id = ?, axel=?, status=? ,lat=?, lng=?, offered_price = ? WHERE id = ?",
-      [address, state, company_id, car_id, axel, status, lat, lng, offered_price, id],
-      (err, results) => {
-        if (err) {
-          console.error(err);
-          res.sendStatus(500);
-        } else {
-          // console.log("result of enquiry", results);
-          pool.query(
-            "UPDATE garages SET garage_name=?,mobile_number=? WHERE id=?",
-            [garage_name, mobile_number, gid],
-            (err, results) => {
-              if (err) {
-                console.error(err);
-                res.sendStatus(500);
-              } else {
-                res.redirect("/enquires/list");
-              }
-            }
-          )
-        }
+    pool.query("SELECT status FROM enquires where id=?", [id], (err, results) => {
+      if (err) {
+        console.error(err);
+        res.sendStatus(500);
       }
-    );
+      else {
+        const old_status = results[0].status;
+        pool.query(
+          "UPDATE enquires SET address = ?, state = ?, company_id = ?, car_id = ?, axel=?, status=? ,lat=?, lng=?, offered_price = ? WHERE id = ?",
+          [address, state, company_id, car_id, axel, status, lat, lng, offered_price, id],
+          (err, results) => {
+            if (err) {
+              console.error(err);
+              res.sendStatus(500);
+            } else {
+              // console.log("result of enquiry", results);
+              pool.query(
+                "UPDATE garages SET mobile_number=? WHERE id=?",
+                [mobile_number, gid],
+                (err, results) => {
+                  if (err) {
+                    console.error(err);
+                    res.sendStatus(500);
+                  } else {
+                    pool.query("SELECT S.id FROM enquires E INNER JOIN garages G ON E.garage_id = G.id INNER JOIN subadmins S ON G.state=S.state WHERE G.id=?", [gid], (err, rst) => {
+                      if (err) {
+                        console.error(err);
+                        res.sendStatus(500);
+                      } else {
+                        const subadminId = rst[0].id;
+                        if (status == 'delivered') {
+                          updateInventory(subadminId, car_id, axel, 1);
+                        }
+                        if (status == 'cancel' && old_status == 'delivered') {
+                          updateInventory(subadminId, car_id, axel, 2);
+                        }
+                        res.redirect("/enquires/list");
+                      }
+                    })
+                  }
+                }
+              )
+            }
+          }
+        );
+      }
+    })
     // console.log('company_id and car_id are integers:', companyId, carId);
   }
 }
+
+const updateInventory = (subadminId, car_id, axel, status_type) => {
+  if (axel != 'Both') {
+    const inventoryField = axel === 'Right' ? 'right_axel_inventory' : 'left_axel_inventory';
+    const updateValue = status_type === 1 ? -1 : 1;
+
+    pool.query(
+      `UPDATE inventory SET ${inventoryField} = ${inventoryField} + ? WHERE subadmin_id = ? AND car_id = ?`,
+      [updateValue, subadminId, car_id],
+      (err, results) => {
+        if (err) {
+          console.error(err);
+        } else {
+          console.log(results);
+        }
+      }
+    );
+  } else {
+    const right_axel_inventory = status_type === 1 ? -1 : 1;
+    const left_axel_inventory = status_type === 1 ? -1 : 1;
+    pool.query(
+      `UPDATE inventory SET right_axel_inventory = right_axel_inventory + ?, left_axel_inventory = left_axel_inventory + ? WHERE subadmin_id = ? AND car_id = ?`,
+      [right_axel_inventory, left_axel_inventory, subadminId, car_id],
+      (err, results) => {
+        if (err) {
+          console.error(err);
+        } else {
+          console.log(results);
+        }
+      }
+    );
+  }
+};
+
 
 const getCitiesByStateId = (req, res) => {
   const stateId = req.params.stateId;
