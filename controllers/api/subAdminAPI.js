@@ -105,15 +105,68 @@ module.exports.getProductEnquiryByState = (req, res) => {
 
 module.exports.updateEnq = (req, res) => {
   try {
-    pool.query(
-      "update enquires set offered_price = ?, status = ? where id = ?",
-      [req.body.price, req.body.status, req.body.id],
-      (req, results) => {
-        res.status(200).json({ message: "Enquiry updated successfully" });
-      }
-    );
+    pool.query("SELECT * FROM enquires WHERE id = ?",[req.body.id],(req,results)=>{
+      const garage_id = results[0].garage_id;
+      const old_status = results[0].status;
+      const car_id = results[0].car_id;
+      const axel = results[0].axel;
+      pool.query("SELECT S.id FROM enquires E INNER JOIN garages G ON E.garage_id = G.id INNER JOIN subadmins S ON G.state=S.state WHERE G.id=?", [garage_id], (err, rst) => {
+        if (err) {
+          console.error(err);
+          res.sendStatus(500);
+        } else {
+          const subadminId = rst[0].id;
+          pool.query(
+            "update enquires set offered_price = ?, status = ? where id = ?",
+            [req.body.price, req.body.status, req.body.id],
+            (req, results) => {
+              if (req.body.status == 'delivered') {
+                updateInventory(subadminId, car_id, axel, 1);
+              }
+              if (req.body.status == 'cancel' && old_status == 'delivered') {
+                updateInventory(subadminId, car_id, axel, 2);
+              }
+              res.status(200).json({ message: "Enquiry updated successfully" });
+            }
+          );
+        }
+      })
+    })
   } catch (err) {
     console.log("error", err);
     res.status(404).json({ message: "some issues occured" });
+  }
+};
+
+const updateInventory = (subadminId, car_id, axel, status_type) => {
+  if (axel != 'Both') {
+    const inventoryField = axel === 'Right' ? 'right_axel_inventory' : 'left_axel_inventory';
+    const updateValue = status_type === 1 ? -1 : 1;
+
+    pool.query(
+      `UPDATE inventory SET ${inventoryField} = ${inventoryField} + ? WHERE subadmin_id = ? AND car_id = ?`,
+      [updateValue, subadminId, car_id],
+      (err, results) => {
+        if (err) {
+          console.error(err);
+        } else {
+          console.log(results);
+        }
+      }
+    );
+  } else {
+    const right_axel_inventory = status_type === 1 ? -1 : 1;
+    const left_axel_inventory = status_type === 1 ? -1 : 1;
+    pool.query(
+      `UPDATE inventory SET right_axel_inventory = right_axel_inventory + ?, left_axel_inventory = left_axel_inventory + ? WHERE subadmin_id = ? AND car_id = ?`,
+      [right_axel_inventory, left_axel_inventory, subadminId, car_id],
+      (err, results) => {
+        if (err) {
+          console.error(err);
+        } else {
+          console.log(results);
+        }
+      }
+    );
   }
 };
