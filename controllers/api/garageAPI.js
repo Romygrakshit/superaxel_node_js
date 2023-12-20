@@ -137,7 +137,7 @@ const insertData = async (
                 } else {
                   // Redirect back to the add garage page
                   pool.query(
-                    "select * from garages where mobile_number = ?",
+                    "select garages.id, garages.garage_name, garages.mobile_number, garages.password, garages.address, garages.city, garages.state, garages.lat, garages.lng, garages.profile_image_id, images.url FROM garages LEFT JOIN images ON garages.profile_image_id = images.id where garages.mobile_number = ? ",
                     [mobile_number],
                     (req, results) => {
                       // console.log("success");
@@ -166,7 +166,9 @@ module.exports.login_garage = async (req, res) => {
   try {
     const { mobile_number, password } = req.body;
     pool.query(
-      `select * from garages where mobile_number = ?`,
+      `select garages.id, garages.garage_name, garages.mobile_number, garages.password, garages.address, garages.city, garages.state, garages.lat, garages.lng, garages.profile_image_id, images.url
+      FROM garages
+      LEFT JOIN images ON garages.profile_image_id = images.id where garages.mobile_number = ?`,
       [mobile_number],
       async (err, results) => {
         if (err) {
