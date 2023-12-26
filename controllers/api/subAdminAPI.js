@@ -120,10 +120,10 @@ module.exports.updateEnq = (req, res) => {
             "update enquires set offered_price = ?, status = ? where id = ?",
             [req.body.price, req.body.status, req.body.id],
             (req, results) => {
-              if (req.body.status == 'delivered') {
+              if (req.body.status.toLowerCase() == 'delivered') {
                 updateInventory(subadminId, car_id, axel, 1);
               }
-              if (req.body.status == 'cancel' && old_status == 'delivered') {
+              if (req.body.status.toLowerCase() == 'cancel' && old_status.toLowerCase() == 'delivered') {
                 updateInventory(subadminId, car_id, axel, 2);
               }
               res.status(200).json({ message: "Enquiry updated successfully" });
