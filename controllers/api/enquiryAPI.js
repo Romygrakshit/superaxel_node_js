@@ -37,7 +37,7 @@ module.exports.listEnquires = async (req, res) => {
   // Fetch data from the "Clubs" table
   const id = req.params.id;
   pool.query(
-    "SELECT * FROM enquires LEFT JOIN delivery_boy ON enquires.delivery_boy = delivery_boy.id LEFT JOIN companies ON enquires.company_id = companies.id LEFT JOIN cars ON enquires.car_id = cars.id LEFT JOIN images ON enquires.images_id = images.id WHERE enquires.garage_id = ?",
+    "SELECT enquires.*, delivery_boy.name as delivery_boy_name, delivery_boy.mobile_number as delivery_boy_mobile_number, companies.company, cars.car_name, images.url FROM enquires LEFT JOIN delivery_boy ON enquires.delivery_boy = delivery_boy.id LEFT JOIN companies ON enquires.company_id = companies.id LEFT JOIN cars ON enquires.car_id = cars.id LEFT JOIN images ON enquires.images_id = images.id WHERE enquires.garage_id =?",
     [id],
     (err, results) => {
       if (err) {
