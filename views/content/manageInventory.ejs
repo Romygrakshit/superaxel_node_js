@@ -8,20 +8,22 @@
             <div class="form-group">
               <label for="Select">Select SubAdmin:</label>
               <select name="Id" id="Select" class="form-control">
-                <option value="<%= subadmin.id %>">
-                  <%= subadmin.name %>
-                </option>
+                <% if (subadmin && subadmin.id) { %>
+                  <option value="<%= subadmin.id %>">
+                    <%= subadmin.name %>
+                  </option>
+                <% } %>
                 <% subadmins.forEach((row) => { %>
-                <option value="<%= row.id %>"><%= row.name %></option>
+                  <option value="<%= row.id %>"><%= row.name %></option>
                 <% }); %>
               </select>
-            </div>
+            </div>            
             <button class="btn btn-primary mb-3">Select</button>
           </form>
         </div>
       </div>
     </div>
-    <% if (subadmin.id > 1) { %>
+    <% if (subadmin && subadmin.id && subadmin.id > 1) { %>
     <div class="col-12 mt-5">
       <div class="card">
         <div class="card-body">
