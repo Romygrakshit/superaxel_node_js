@@ -66,7 +66,7 @@ const updateInventory = async (req, res) => {
 };
 
 const editCars = async (req, res) => {
-  const { car_name, company, left_axel_price, right_axel_price, id } = req.body;
+  const { car_name, company, id } = req.body;
 
   // Update category to database
   pool.query(
@@ -80,14 +80,14 @@ const editCars = async (req, res) => {
         // Render the manageusers.hbs template with the user data
         const company_id = results[0].id;
         pool.query(
-          "UPDATE cars SET car_name = ?, company_id = ?, left_axel_price = ?,right_axel_price = ? WHERE id = ?",
-          [car_name, company_id, left_axel_price, right_axel_price, id],
+          "UPDATE cars SET car_name = ?, company_id = ? WHERE id = ?",
+          [car_name, company_id, id],
           (err, results) => {
             if (err) {
               console.error(err);
               res.sendStatus(500);
             } else {
-              res.json({ data: results })
+              res.redirect("/cars/list");
             }
           }
         );
