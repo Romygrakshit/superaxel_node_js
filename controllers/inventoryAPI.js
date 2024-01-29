@@ -170,6 +170,30 @@ const changeInventory = async (req, res) => {
     }
   });
 };
+//Update Inventory Price updateInventoryPrice
+const updateInventoryPrice = async (req, res) => {
+  const { id, leftAxelPrice, rightAxelPrice } = req.body;
+  // Fetch data from the "subadmins" table of particular garage
+  pool.query("UPDATE inventory SET left_axel_price = ?, right_axel_price = ? WHERE id = ?", [leftAxelPrice, rightAxelPrice, id], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.sendStatus(500);
+    } else {
+      pool.query("SELECT subadmin_id FROM inventory WHERE id= ?", [id],
+        (err, results) => {
+          if (err) {
+            console.error(err)
+            res.sendStatus(500);
+          } else {
+            // console.log(results[0])
+            const subadmin_id = results[0].subadmin_id;
+            res.redirect(`/inventory/list/${subadmin_id}?_method=PUT`);
+          }
+        }
+      )
+    }
+  });
+};
 // Edit Inventory Page
 const editInventory = async (req, res) => {
   const {
@@ -196,10 +220,10 @@ const editInventory = async (req, res) => {
   });
 };
 
-// Delete Inventory
-const deleteInventory = async (req, res) => {
+// Disable Inventory
+const disableInventory = async (req, res) => {
   const inventoryId = req.params.id;
-  pool.query(`DELETE FROM inventory WHERE id = ${inventoryId}`, (err, results) => {
+  pool.query(`UPDATE inventory SET is_disable = NOT(is_disable) WHERE id = ${inventoryId}`, (err, results) => {
     if (err) {
       console.error(err);
       res.sendStatus(500);
@@ -237,7 +261,7 @@ const listInventoryAdmin = async (req, res) => {
           res.sendStatus(500);
         } else {
           const subadmins = results;
-          pool.query("SELECT inventory.*, inventory.id as in_id, cars.*, companies.* FROM inventory JOIN cars ON inventory.car_id = cars.id LEFT JOIN companies ON cars.company_id = companies.id WHERE inventory.subadmin_id = ?", [Id], (err, results) => {
+          pool.query("SELECT inventory.*, inventory.id as in_id, cars.*, companies.* FROM inventory JOIN cars ON inventory.car_id = cars.id LEFT JOIN companies ON cars.company_id = companies.id WHERE NOT(inventory.is_disable) AND inventory.subadmin_id = ?", [Id], (err, results) => {
             if (err) {
               console.error(err);
               res.sendStatus(500);
@@ -276,10 +300,11 @@ const getCarsByCompanyId = (req, res) => {
 module.exports = {
   newInventory,
   editInventory,
-  deleteInventory,
+  disableInventory,
   listInventoryAdmin,
   editInventoryPage,
   addInventoryPage,
   changeInventory,
+  updateInventoryPrice,
   getCarsByCompanyId
 };

@@ -44,6 +44,7 @@
                   <th>Right Axel Inventory</th>
                   <th>Delete Inventory</th>
                   <th>Change Inventory</th>
+                  <th>Update Price</th>
                   <th>Date|Time</th>
                   <th></th>
                 </tr>
@@ -65,14 +66,14 @@
                       data-toggle="modal"
                       data-target="#exampleModalLong-<%= row.in_id %>"
                     >
-                      Delete User
+                      Disable Inventory
                     </button>
 
                     <div class="modal fade" id="exampleModalLong-<%= row.in_id %>">
                       <div class="modal-dialog">
                         <div class="modal-content">
                           <div class="modal-header">
-                            <h5 class="modal-title">Delete Inventory</h5>
+                            <h5 class="modal-title">Disable Inventory</h5>
                             <button
                               type="button"
                               class="close"
@@ -82,22 +83,22 @@
                             </button>
                           </div>
                           <form
-                            action="delete/<%= row.in_id %>?_method=PUT"
+                            action="disable/<%= row.in_id %>?_method=PUT"
                             method="post"
                           >
                             <div class="modal-body">
-                              <h6>Do you want to delete the inventory?</h6>
+                              <h6>Do you want to disable the inventory?</h6>
                             </div>
                             <div class="modal-footer">
+                              <button type="submit" class="btn btn-success">
+                                Yes
+                              </button>
                               <button
                                 type="button"
-                                class="btn btn-secondary"
+                                class="btn btn-danger"
                                 data-dismiss="modal"
                               >
-                                Close
-                              </button>
-                              <button type="submit" class="btn btn-danger">
-                                Save changes
+                                No
                               </button>
                             </div>
                           </form>
@@ -177,8 +178,65 @@
                       </div>
                     </div>
                   </td>
+                  <td>
+                    <button
+                        type="button"
+                        class="btn btn-warning mt-3"
+                        data-toggle="modal"
+                        data-target="#updatePriceModal-<%= row.in_id %>"
+                    >
+                        Update Price
+                    </button>
+                
+                    <div class="modal fade" id="updatePriceModal-<%= row.in_id %>">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Update Price</h5>
+                                    <button
+                                        type="button"
+                                        class="close"
+                                        data-dismiss="modal"
+                                    >
+                                        <span>&times;</span>
+                                    </button>
+                                </div>
+                                <form action="/inventory/updatePrice?_method=PUT" method="post">
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label for="leftAxelPrice">Left Axel Price:</label>
+                                            <input
+                                                class="form-control"
+                                                type="text"
+                                                name="leftAxelPrice"
+                                                value="<%= row.left_axel_price %>"
+                                            />
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="rightAxelPrice">Right Axel Price:</label>
+                                            <input
+                                                class="form-control"
+                                                type="text"
+                                                name="rightAxelPrice"
+                                                value="<%= row.right_axel_price %>"
+                                            />
+                                        </div>
+                                        <input
+                                            class="form-control"
+                                            type="hidden"
+                                            name="id"
+                                            value="<%= row.in_id %>"
+                                        />
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Update Price</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </td>                
                   <td><%= row.date %></td>
-                  <td></td>
                 </tr>
 
                 <% }); %>
