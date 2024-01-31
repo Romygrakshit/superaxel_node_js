@@ -64,12 +64,12 @@
                       type="button"
                       class="btn btn-danger mt-3"
                       data-toggle="modal"
-                      data-target="#exampleModalLong-<%= row.in_id %>"
+                      data-target="#disableInventoryModel-<%= row.in_id %>"
                     >
                       Disable Inventory
                     </button>
 
-                    <div class="modal fade" id="exampleModalLong-<%= row.in_id %>">
+                    <div class="modal fade" id="disableInventoryModel-<%= row.in_id %>">
                       <div class="modal-dialog">
                         <div class="modal-content">
                           <div class="modal-header">
@@ -111,12 +111,12 @@
                       type="button"
                       class="btn btn-success mt-3"
                       data-toggle="modal"
-                      data-target="#exampleModalLong"
+                      data-target="#exampleModalLong-<%= row.in_id %>"
                     >
                       Update Inventory
                     </button>
 
-                    <div class="modal fade" id="exampleModalLong">
+                    <div class="modal fade" id="exampleModalLong-<%= row.in_id %>">
                       <div class="modal-dialog">
                         <div class="modal-content">
                           <div class="modal-header">
