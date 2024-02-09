@@ -105,38 +105,71 @@ module.exports.getProductEnquiryByState = (req, res) => {
 
 module.exports.updateEnq = (req, res) => {
   try {
-    pool.query("SELECT * FROM enquires WHERE id = ?",[req.body.id],(req,results)=>{
+    pool.query("SELECT * FROM enquires WHERE id = ?", [req.body.id], (err, results) => {
+      if (err) {
+        console.error(err);
+        return res.sendStatus(500);
+      }
+
       const garage_id = results[0].garage_id;
       const old_status = results[0].status;
       const car_id = results[0].car_id;
       const axel = results[0].axel;
-      pool.query("SELECT S.id FROM enquires E INNER JOIN garages G ON E.garage_id = G.id INNER JOIN subadmins S ON G.state=S.state WHERE G.id=?", [garage_id], (err, rst) => {
-        if (err) {
-          console.error(err);
-          res.sendStatus(500);
-        } else {
+
+      pool.query(
+        "SELECT S.id FROM enquires E INNER JOIN garages G ON E.garage_id = G.id INNER JOIN subadmins S ON G.state=S.state WHERE G.id=?",
+        [garage_id],
+        (err, rst) => {
+          if (err) {
+            console.error(err);
+            return res.sendStatus(500);
+          }
+
           const subadminId = rst[0].id;
-          pool.query(
-            "update enquires set offered_price = ?, status = ? where id = ?",
-            [req.body.price, req.body.status, req.body.id],
-            (req, results) => {
-              if (req.body.status.toLowerCase() == 'delivered') {
-                updateInventory(subadminId, car_id, axel, 1);
-              }
-              if (req.body.status.toLowerCase() == 'cancel' && old_status.toLowerCase() == 'delivered') {
-                updateInventory(subadminId, car_id, axel, 2);
-              }
-              res.status(200).json({ message: "Enquiry updated successfully" });
+
+          let query = "UPDATE enquires SET ";
+          const queryParams = [];
+
+          if (req.body.price !== undefined) {
+            query += "offered_price = ?, ";
+            queryParams.push(req.body.price);
+          }
+          if (req.body.status !== undefined) {
+            query += "status = ?, ";
+            queryParams.push(req.body.status);
+          }
+
+          // Remove the trailing comma and space from the query
+          query = query.slice(0, -2);
+
+          query += " WHERE id = ?";
+          queryParams.push(req.body.id);
+
+          pool.query(query, queryParams, (err, results) => {
+            if (err) {
+              console.error(err);
+              return res.sendStatus(500);
             }
-          );
+
+            if (req.body.status && req.body.status.toLowerCase() === 'delivered') {
+              updateInventory(subadminId, car_id, axel, 1);
+            }
+
+            if (req.body.status && req.body.status.toLowerCase() === 'cancel' && old_status.toLowerCase() === 'delivered') {
+              updateInventory(subadminId, car_id, axel, 2);
+            }
+
+            res.status(200).json({ message: "Enquiry updated successfully" });
+          });
         }
-      })
-    })
+      );
+    });
   } catch (err) {
     console.log("error", err);
-    res.status(404).json({ message: "some issues occured" });
+    res.status(404).json({ message: "some issues occurred" });
   }
 };
+
 
 const updateInventory = (subadminId, car_id, axel, status_type) => {
   if (axel != 'Both') {
