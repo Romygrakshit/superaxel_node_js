@@ -13,6 +13,11 @@ const pool = mysql.createPool({
   database: "superaxel",
 });
 
+const serviceAccount = require('../firebase/serviceAccountKey.json'); 
+const admin = require('firebase-admin');
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
 
 // const postBannerImage = async (req, res) => {};
 
@@ -32,6 +37,30 @@ const storageEngine = multer.diskStorage({
 });
 
 const upload = multer({ storage: storageEngine });
+
+// Function to send FCM notifications to subadmins
+const sendFCMNotifications = async (fcmToken, enquiryDetails) => {
+  if (!fcmToken || !enquiryDetails) {
+    return ('Missing required fields: fcmToken, enquiryDetails');
+  }
+  try {
+    const message = {
+      fcmToken,
+      notification: {
+        title: 'New Enquiry Received',
+        body: 'A new enquiry has been raised by a garage'
+      },
+      data: {
+        enquiryDetails: JSON.stringify(enquiryDetails)
+      },
+    };
+
+    const response = await admin.messaging().send(message);
+    console.log('FCM notification sent successfully:', response);
+  } catch (error) {
+    console.error('Error sending FCM notification:', error);
+  }
+}
 
 const newEnquires = async (req, res, next) => {
   try {
@@ -163,6 +192,28 @@ const insertData = async (
             console.error(err);
             res.sendStatus(500);
           } else {
+            pool.query("SELECT s.fcm_token from subadmins s LEFT JOIN garages g on s.state=g.state where g.id = ?;", [garage_id],
+              (err, results) => {
+                if (err) {
+                  console.error(err);
+                  res.sendStatus(500);
+                } else {
+                  const fcmToken = results[0].fcm_token;
+                  const enquiryDetails = {
+                    garage_id,
+                    address,
+                    lat,
+                    lng,
+                    company_id,
+                    car_id,
+                    axel,
+                    offered_price,
+                    status,
+                    images_id,
+                  }
+                  sendFCMNotifications(fcmToken, enquiryDetails);
+                }
+              })
             // Redirect back to the add club page
             res.redirect("/enquires/list");
           }
@@ -562,4 +613,5 @@ module.exports = {
   deleteEnquiry,
   updateEnquiryImage,
   deleteEnquiryImage,
+  sendFCMNotifications,
 };

@@ -203,3 +203,15 @@ const updateInventory = (subadminId, car_id, axel, status_type) => {
     );
   }
 };
+
+module.exports.updateFCMToken = async (req, res) => {
+  const { id, fcmToken } = req.body;
+  const query = 'UPDATE garages SET fcm_token = ? WHERE id = ?';
+  pool.query(query, [fcmToken, id], (error) => {
+    if (error) {
+      res.status(500).json(error);
+    } else {
+      res.status(200);
+    }
+  });
+}

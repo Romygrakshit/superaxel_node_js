@@ -12,7 +12,6 @@ const {
   getCitiesByStateId,
   updatePassword,
   validateInputs,
-  // upload,
 } = require("../controllers/subAdminsAPI");
 
 router.route("/register").post(validateInputs, registerSubAdmins);
@@ -28,6 +27,6 @@ router.post('/api/createInventory', subAdminAPI.createInventory);
 router.post('/api/getEnqbyState', subAdminAPI.getEnquiryByState); 
 router.post('/api/getProductEnqbyState', subAdminAPI.getProductEnquiryByState); 
 router.post('/api/updateEnq', subAdminAPI.updateEnq); 
-// router.route("/upload").post(upload);
+router.post('/api/updateFCMToken/:id', subAdminAPI.updateFCMToken);
 
 module.exports = router;
