@@ -204,14 +204,14 @@ const updateInventory = (subadminId, car_id, axel, status_type) => {
   }
 };
 
-module.exports.updateFCMToken = async (req, res) => {
+module.exports.updateFCMToken = (req, res) => {
   const { id, fcmToken } = req.body;
   const query = 'UPDATE garages SET fcm_token = ? WHERE id = ?';
-  pool.query(query, [fcmToken, id], (error) => {
+  pool.query(query, [fcmToken, id], (error,results) => {
     if (error) {
       res.status(500).json(error);
     } else {
-      res.status(200);
+      res.json({ success: true, data: results });
     }
   });
 }
