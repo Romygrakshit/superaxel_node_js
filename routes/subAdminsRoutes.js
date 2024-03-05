@@ -27,6 +27,6 @@ router.post('/api/createInventory', subAdminAPI.createInventory);
 router.post('/api/getEnqbyState', subAdminAPI.getEnquiryByState); 
 router.post('/api/getProductEnqbyState', subAdminAPI.getProductEnquiryByState); 
 router.post('/api/updateEnq', subAdminAPI.updateEnq); 
-router.post('/api/updateFCMToken/:id', subAdminAPI.updateFCMToken);
+router.post('/api/updateFCMToken', subAdminAPI.updateFCMToken);
 
 module.exports = router;

@@ -38,7 +38,7 @@ router.post("/api/cars", garageAPI.getCars);
 router.post("/api/price", garageAPI.getPrice);
 router.post("/api/productprice", garageAPI.getProductPrice);
 router.post("/api/getProductEnquryById", garageAPI.getProductEnquiryById);
-router.post('/api/updateFCMToken/:id', garageAPI.updateFCMToken);
+router.post('/api/updateFCMToken', garageAPI.updateFCMToken);
 
 module.exports = router;
 
