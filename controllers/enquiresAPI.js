@@ -45,7 +45,7 @@ const sendFCMNotifications = async (fcmToken, enquiryDetails) => {
   }
   try {
     const message = {
-      fcmToken,
+      token:fcmToken,
       notification: {
         title: 'New Enquiry Received',
         body: 'A new enquiry has been raised by a garage'
